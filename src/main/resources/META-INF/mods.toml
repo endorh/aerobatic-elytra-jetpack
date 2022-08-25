@@ -1,0 +1,50 @@
+modLoader="javafml"
+loaderVersion="[35,)"
+license="${license}"
+#issueTrackerURL="${issue_tracker}"
+[[mods]]
+	modId="aerobaticelytrajetpack"
+	version="${version}"
+	displayName="${display}"
+	#updateJSONURL="${update_json}"
+	#displayURL="${page}"
+	logoFile="${logo_file}"
+	credits="${credits}"
+	authors="${authors}"
+	description='''${description}'''
+[[dependencies.aerobaticelytrajetpack]]
+    modId="forge"
+    mandatory=true
+    versionRange="[35,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.aerobaticelytrajetpack]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.4,1.17)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.aerobaticelytrajetpack]]
+    modId="flightcore"
+    mandatory=true
+    versionRange="[1.16.5-0.5,1.16.5-1.0)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.aerobaticelytrajetpack]]
+    modId="aerobaticelytra"
+    mandatory=true
+    versionRange="[0.2,1.0)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.aerobaticelytrajetpack]]
+    modId="endorutil"
+    versionRange="[1.16.5-0.5,1.16.5-1.0)"
+    mandatory=true
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.aerobaticelytrajetpack]]
+    modId="simpleconfig"
+    versionRange="[1.0,2.0)"
+    mandatory=true
+    ordering="NONE"
+    side="BOTH"

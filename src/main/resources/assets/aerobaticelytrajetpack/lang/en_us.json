@@ -1,0 +1,65 @@
+{
+  "key.aerobaticelytrajetpack.hover_mode.desc": "Switch Jetpack mode",
+
+  "stat.aerobaticelytrajetpack.jetpack_flight_one_cm": "Distance by Jetpack",
+  "stat.aerobaticelytrajetpack.jetpack_hover_one_second": "Time Hovering with Jetpack",
+
+  "aerobaticelytrajetpack.abilities.jetpack": "Jetpack",
+  "aerobaticelytrajetpack.abilities.hover": "Jetpack Hover",
+  "aerobaticelytrajetpack.abilities.hover_mining": "Hover Mining",
+
+  "aerobaticelytrajetpack.subtitle.jetpack_flight": "Jetpack",
+
+  "aerobaticelytrajetpack.config.server.flight_modes": "Flight Modes",
+  "aerobaticelytrajetpack.config.server.flight_modes.jetpack_flight_enabled": "Enable Jetpack Flight",
+  "aerobaticelytrajetpack.config.server.flight_modes.hover_flight_enabled": "Enable Hover Flight",
+
+  "aerobaticelytrajetpack.config.server.flight": "Flight",
+  "aerobaticelytrajetpack.config.server.flight.tilt_range": "Tilt Range",
+  "aerobaticelytrajetpack.config.server.flight.tilt_range:help": "How many degrees should players tilt when flying with jetpack",
+  "aerobaticelytrajetpack.config.server.flight.propulsion_base": "Propulsion Base",
+  "aerobaticelytrajetpack.config.server.flight.propulsion_base:help": "Base propulsion in m/s²",
+  "aerobaticelytrajetpack.config.server.flight.propulsion_max": "Propulsion Max",
+  "aerobaticelytrajetpack.config.server.flight.propulsion_max:help": "Max propulsion in m/s²\n§7Reached after charge time",
+  "aerobaticelytrajetpack.config.server.flight.charge_time": "Charge Time",
+  "aerobaticelytrajetpack.config.server.flight.charge_time:help": "Time in seconds that takes the jetpack to\nheat up, reaching its max propulsion",
+  "aerobaticelytrajetpack.config.server.flight.cooldown_time": "Cooldown Time",
+  "aerobaticelytrajetpack.config.server.flight.cooldown_time:help": "Time in seconds that takes the jetpack to \ncool down when not flying",
+  "aerobaticelytrajetpack.config.server.flight.hover_horizontal_speed": "Hover Horizontal Speed",
+  "aerobaticelytrajetpack.config.server.flight.hover_horizontal_speed:help": "Horizontal speed in hover mode, in m/s",
+  "aerobaticelytrajetpack.config.server.flight.hover_vertical_speed": "Hover Vertical Speed",
+  "aerobaticelytrajetpack.config.server.flight.hover_vertical_speed:help": "Vertical speed in hover mode, in m/s",
+
+  "aerobaticelytrajetpack.config.server.fuel": "Fuel",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_linear": "Fuel Usage (Linear)",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_linear:help": "Fuel usage in units/s at max propulsion scaled linearly\nAdds with the other usages",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_quad": "Fuel Usage (Quad)",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_quad:help": "Fuel usage in units/s at max propulsion scaled quadratically\nAdds with the other usages",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_sqrt": "Fuel Usage (Sqrt)",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_sqrt:help": "Fuel usage in units/s at max propulsion scaled as a sqrt\nAdds with the other usages",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_hover": "Hover Fuel Usage",
+  "aerobaticelytrajetpack.config.server.fuel.fuel_usage_hover:help": "Fuel usage for hover mode, in units/s",
+
+  "aerobaticelytrajetpack.config.server.height_penalty": "Height Penalty",
+  "aerobaticelytrajetpack.config.server.height_penalty:help": "The propulsion can be configured to diminish with height\n§7If the penalty is strong enough, players may be unable\n§7to surpass a certain height with jetpack",
+  "aerobaticelytrajetpack.config.server.height_penalty.min_height": "Min Penalty Height",
+  "aerobaticelytrajetpack.config.server.height_penalty.min_height:help": "Height at which the penalty starts being applied",
+  "aerobaticelytrajetpack.config.server.height_penalty.max_height": "Max Penalty Height",
+  "aerobaticelytrajetpack.config.server.height_penalty.max_height:help": "Height at which the penalty reaches its cap",
+  "aerobaticelytrajetpack.config.server.height_penalty.penalty": "Height Penalty",
+  "aerobaticelytrajetpack.config.server.height_penalty.penalty:help": "Max applicable height penalty\n§7Acts as a multiplier for propulsion",
+
+  "aerobaticelytrajetpack.config.server.network": "Network",
+  "aerobaticelytrajetpack.config.server.network.allowed_extra_float_time": "Allowed Extra Float Time",
+  "aerobaticelytrajetpack.config.server.network.allowed_extra_float_time:help": "Vanilla kicks players that are falling for more than 4s\n§7This timer is reset as long as the player is flying with Jetpack\n§7However, after flying, a player may fall for far more than 4s\n§7This setting can grant players extra float time in seconds\n§7Setting this to 0 grants immunity as long as in Jetpack mode",
+
+  "aerobaticelytrajetpack.config.client.disable_hover_when_landing": "Disable Hover Mode when landing",
+  "aerobaticelytrajetpack.config.client.disable_hover_when_landing:help": "Most other jetpack mods offer this behaviour by default",
+  "aerobaticelytrajetpack.config.client.sound": "Sound",
+  "aerobaticelytrajetpack.config.client.sound.master": "Master",
+  "aerobaticelytrajetpack.config.client.sound.master:help": "Affects all mod sounds",
+  "aerobaticelytrajetpack.config.client.sound.jetpack": "Jetpack",
+  "aerobaticelytrajetpack.config.client.sound.jetpack:help": "Affects the regular jetpack flight sound",
+  "aerobaticelytrajetpack.config.client.sound.hover": "Hover",
+  "aerobaticelytrajetpack.config.client.sound.hover:help": "Affects the hovering jetpack sound"
+}

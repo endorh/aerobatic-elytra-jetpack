@@ -1,0 +1,12 @@
+{
+  "key.aerobaticelytrajetpack.hover_mode.desc": "Alternar modo de Jetpack",
+
+  "stat.aerobaticelytrajetpack.jetpack_flight_one_cm": "Distancia en Jetpack",
+  "stat.aerobaticelytrajetpack.jetpack_hover_one_second": "Tiempo sobrevolando en Jetpack",
+
+  "aerobaticelytrajetpack.abilities.jetpack": "Jetpack",
+  "aerobaticelytrajetpack.abilities.hover": "Sobrevuelo",
+  "aerobaticelytrajetpack.abilities.hover_mining": "Minado en Jetpack",
+
+  "aerobaticelytrajetpack.subtitle.jetpack_flight": "Jetpack"
+}

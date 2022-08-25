@@ -1,0 +1,10 @@
+package endorh.aerobaticelytra.jetpack.common.flight;
+
+import net.minecraft.util.ResourceLocation;
+
+import static endorh.aerobaticelytra.jetpack.AerobaticJetpack.prefix;
+
+public class JetpackFlightModeTags {
+	public static final ResourceLocation JETPACK = prefix("jetpack");
+	public static final ResourceLocation HOVER = prefix("hover");
+}

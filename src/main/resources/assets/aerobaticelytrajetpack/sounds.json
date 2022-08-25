@@ -1,0 +1,9 @@
+{
+  "jetpack.flight": {
+    "subtitle": "aerobaticelytrajetpack.subtitle.jetpack_flight",
+    "sounds": ["aerobaticelytrajetpack:jetpack_flight"]
+  },
+  "jetpack.hover": {
+    "sounds": ["aerobaticelytrajetpack:jetpack_hover"]
+  }
+}

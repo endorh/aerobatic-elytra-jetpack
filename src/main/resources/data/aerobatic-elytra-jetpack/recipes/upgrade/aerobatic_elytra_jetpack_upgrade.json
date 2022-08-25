@@ -1,0 +1,16 @@
+{
+  "type": "aerobaticelytra:upgrade_recipe",
+  "_comment": "",
+  "ingredients": [
+    "minecraft:gunpowder"
+  ],
+  "upgrades": [
+    {
+      "type": "Jetpack",
+      "expression": 1
+    }, {
+      "type": "Hover",
+      "expression": 1
+    }
+  ]
+}
