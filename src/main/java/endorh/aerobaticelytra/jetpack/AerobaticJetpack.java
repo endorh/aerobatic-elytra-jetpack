@@ -2,10 +2,13 @@ package endorh.aerobaticelytra.jetpack;
 
 import endorh.aerobaticelytra.jetpack.client.config.ClientConfig;
 import endorh.aerobaticelytra.jetpack.client.input.KeyHandler;
+import endorh.aerobaticelytra.jetpack.client.render.PlayerRendererHandler;
 import endorh.aerobaticelytra.jetpack.common.config.Config;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -30,8 +33,10 @@ public class AerobaticJetpack {
 	
 	public AerobaticJetpack() {
 		Config.register();
-		if (FMLEnvironment.dist == Dist.CLIENT)
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			ClientConfig.register();
+			MinecraftForge.EVENT_BUS.register(PlayerRendererHandler.class);
+		});
 		LOGGER.debug(MAIN, "Mod loading started");
 	}
 	

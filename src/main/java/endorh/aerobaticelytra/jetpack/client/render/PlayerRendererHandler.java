@@ -29,9 +29,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = AerobaticJetpack.MOD_ID)
 public class PlayerRendererHandler {
-	
 	public static void onCameraSetup(final CameraSetup event) {
 		final ActiveRenderInfo info = event.getInfo();
 		final Entity entity = info.getRenderViewEntity();
@@ -84,8 +82,7 @@ public class PlayerRendererHandler {
 		}
 	}
 	
-	@SubscribeEvent
-	public static void onRenderPlayerEvent(RenderPlayerEvent.Post event) {
+	@SubscribeEvent public static void onRenderPlayerEvent(RenderPlayerEvent.Post event) {
 		event.getMatrixStack().pop();
 	}
 	
@@ -95,8 +92,7 @@ public class PlayerRendererHandler {
 	/**
 	 * Tilt the player model when flying with jetpack
 	 */
-	@SubscribeEvent
-	public static void onApplyRotationsRenderPlayerEvent(
+	@SubscribeEvent public static void onSetupRotationsRenderPlayerEvent(
 	  SetupRotationsRenderPlayerEvent event
 	) {
 		IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(event.player);

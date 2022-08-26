@@ -26,7 +26,7 @@ plugins {
 
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
-val modVersion = "0.2.15"
+val modVersion = "0.2.17"
 val mcVersion = "1.16.5"
 val forge = "36.1.0"
 val forgeVersion = "$mcVersion-$forge"
@@ -267,6 +267,8 @@ reobf {
 
 // Jar attributes
 tasks.jar {
+	archiveBaseName.set(modArtifactId)
+	
 	manifest {
 		attributes(jarAttributes)
 	}
@@ -274,8 +276,22 @@ tasks.jar {
 	finalizedBy(reobfJar)
 }
 
+val sourcesJarTask = tasks.register<Jar>("sourcesJar") {
+	group = "build"
+	archiveBaseName.set(modArtifactId)
+	archiveClassifier.set("sources")
+	
+	from(sourceSets.main.get().allJava)
+	
+	manifest {
+		attributes(jarAttributes)
+		attributes(mapOf("Maven-Artifact" to "$modMavenArtifact:${archiveClassifier.get()}"))
+	}
+}
+
 val deobfJarTask = tasks.register<Jar>("deobfJar") {
 	group = "build"
+	archiveBaseName.set(modArtifactId)
 	archiveClassifier.set("deobf")
 	
 	from(sourceSets.main.get().output)
@@ -343,6 +359,7 @@ tasks.clean {
 
 artifacts {
 	archives(tasks.jar.get())
+	archives(sourcesJarTask)
 	archives(deobfJarTask)
 }
 
@@ -359,6 +376,7 @@ publishing {
 			version = modVersion
 			
 			artifact(tasks.jar.get())
+			artifact(sourcesJarTask)
 			artifact(deobfJarTask)
 			
 			pom {
