@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.Color;
 import java.util.Locale;
 
+import net.minecraft.particles.IParticleData.IDeserializer;
+
 public class JetpackParticleData implements IParticleData {
 	
 	public final Color tint;
@@ -25,14 +27,14 @@ public class JetpackParticleData implements IParticleData {
 		return ModParticles.JETPACK_PARTICLE;
 	}
 	
-	@Override public void write(@NotNull PacketBuffer buf) {
+	@Override public void writeToNetwork(@NotNull PacketBuffer buf) {
 		buf.writeInt(tint.getRGB());
 		buf.writeInt(life);
 		buf.writeFloat(size);
 		buf.writeBoolean(ownPlayer);
 	}
 	
-	@NotNull @Override public String getParameters() {
+	@NotNull @Override public String writeToString() {
 		return String.format(
 		  Locale.ROOT, "%s %.2f %d %d %d %b",
 		  this.getType().getRegistryName(), size,
@@ -65,7 +67,7 @@ public class JetpackParticleData implements IParticleData {
 	public static final IDeserializer<JetpackParticleData> DESERIALIZER =
 	  new IDeserializer<JetpackParticleData>() {
 		@NotNull @Override
-		public JetpackParticleData deserialize(
+		public JetpackParticleData fromCommand(
 		  @NotNull ParticleType<JetpackParticleData> type, @NotNull StringReader reader
 		) throws CommandSyntaxException {
 			reader.expect(' ');
@@ -88,7 +90,7 @@ public class JetpackParticleData implements IParticleData {
 		}
 		
 		@Override
-		public JetpackParticleData read(
+		public JetpackParticleData fromNetwork(
 		  @NotNull ParticleType<JetpackParticleData> type, PacketBuffer buf
 		) {
 			int rgb = buf.readInt();
@@ -110,7 +112,7 @@ public class JetpackParticleData implements IParticleData {
 			super(alwaysShow, DESERIALIZER);
 		}
 		
-		@NotNull @Override public Codec<JetpackParticleData> func_230522_e_() {
+		@NotNull @Override public Codec<JetpackParticleData> codec() {
 			return CODEC;
 		}
 	}

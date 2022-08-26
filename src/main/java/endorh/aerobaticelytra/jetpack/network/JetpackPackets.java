@@ -104,10 +104,10 @@ public class JetpackPackets {
 		public SJetpackMotionPacket() {}
 		public SJetpackMotionPacket(PlayerEntity player) {
 			super(player);
-			this.motion = new Vec3f(player.getMotion());
+			this.motion = new Vec3f(player.getDeltaMovement());
 		}
 		@Override protected void onClient(PlayerEntity player, Context ctx) {
-			player.setMotion(motion.toVector3d());
+			player.setDeltaMovement(motion.toVector3d());
 		}
 		@Override protected void serialize(PacketBuffer buf) {
 			motion.write(buf);

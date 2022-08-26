@@ -12,6 +12,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 
+import endorh.util.sound.PlayerTickableSound.IAttenuation;
+import endorh.util.sound.PlayerTickableSound.PlayerTickableSubSound;
+
 public class JetpackSound extends FadingTickableSound {
 	
 	private static final int FADE_IN = 3;
@@ -50,7 +53,7 @@ public class JetpackSound extends FadingTickableSound {
 	}
 	
 	@Override public void tick(float fade_factor) {
-		float s = (float)player.getMotion().length();
+		float s = (float)player.getDeltaMovement().length();
 		float vol = MathHelper.lerp(MathHelper.clamp(s, 0F, 0.5F), 0.5F, 1.0F) * fade_factor;
 		if (!flightData.isFlightMode(mode)) {
 			mode = flightData.getFlightMode();

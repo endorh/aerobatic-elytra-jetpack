@@ -15,14 +15,12 @@ import java.util.Optional;
 
 import static endorh.aerobaticelytra.common.item.IAbility.DisplayType.SCALE_BOOL;
 import static endorh.util.text.TextUtil.ttc;
-import static net.minecraft.util.text.TextFormatting.DARK_RED;
-import static net.minecraft.util.text.TextFormatting.GRAY;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = AerobaticJetpack.MOD_ID)
 public enum JetpackAbilities implements IAbility {
-	JETPACK(DARK_RED, 1F, SCALE_BOOL),
-	HOVER(GRAY, 1F, SCALE_BOOL),
-	HOVER_MINING(GRAY, 0.2F, new DisplayType() {
+	JETPACK(TextFormatting.DARK_RED, 1F, SCALE_BOOL),
+	HOVER(TextFormatting.GRAY, 1F, SCALE_BOOL),
+	HOVER_MINING(TextFormatting.GRAY, 0.2F, new DisplayType() {
 		@Override public Optional<IFormattableTextComponent> format(IAbility ability, float value) {
 			return value != 0.2F? SCALE.format(ability, value) : Optional.empty();
 		}

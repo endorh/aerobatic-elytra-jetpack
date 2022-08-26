@@ -39,8 +39,8 @@ public class ModParticles {
 	
 	@SubscribeEvent
 	public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-		ParticleManager p = Minecraft.getInstance().particles;
-		p.registerFactory(JETPACK_PARTICLE, JetpackParticle.Factory::new);
+		ParticleManager p = Minecraft.getInstance().particleEngine;
+		p.register(JETPACK_PARTICLE, JetpackParticle.Factory::new);
 		
 		AerobaticJetpack.logRegistered("Particle Factories");
 	}

@@ -30,56 +30,56 @@ public class JetpackParticle extends SpriteTexturedParticle {
 		this.size = size;
 		this.ownPlayer = ownPlayer;
 		
-		particleScale = size;
-		maxAge = life;
+		quadSize = size;
+		lifetime = life;
 		
-		particleAlpha = 1F;
-		particleGravity = 0.08F;
+		alpha = 1F;
+		gravity = 0.08F;
 		
-		motionX = speedX;
-		motionY = speedY;
-		motionZ = speedZ;
+		xd = speedX;
+		yd = speedY;
+		zd = speedZ;
 		
-		canCollide = true;
+		hasPhysics = true;
 	}
 	
-	@Override public void renderParticle(
+	@Override public void render(
 	  @NotNull IVertexBuilder buffer, @NotNull ActiveRenderInfo renderInfo, float partialTicks
 	) {
 		if (age < 1) // Weird things
 			return;
-		if (!ownPlayer || Minecraft.getInstance().gameSettings.getPointOfView() != PointOfView.FIRST_PERSON) {
+		if (!ownPlayer || Minecraft.getInstance().options.getCameraType() != PointOfView.FIRST_PERSON) {
 			//selectSpriteWithAge(sprites);
-			selectSpriteRandomly(sprites);
-			particleScale = size * (1F - (float)age / maxAge);
-			setAlphaF(1F - 0.7F * (age + partialTicks) / maxAge);
-			super.renderParticle(buffer, renderInfo, partialTicks);
+			pickSprite(sprites);
+			quadSize = size * (1F - (float)age / lifetime);
+			setAlpha(1F - 0.7F * (age + partialTicks) / lifetime);
+			super.render(buffer, renderInfo, partialTicks);
 		}
 	}
 	
 	@Override public void tick() {
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
-		if (age++ >= maxAge) {
-			setExpired();
+		xo = x;
+		yo = y;
+		zo = z;
+		if (age++ >= lifetime) {
+			remove();
 		} else {
-			motionY -= 0.04D * (double)particleGravity;
-			move(motionX, motionY, motionZ);
+			yd -= 0.04D * (double)gravity;
+			move(xd, yd, zd);
 			final float friction = 0.96F;
-			motionX *= friction;
-			motionY *= friction;
-			motionZ *= friction;
+			xd *= friction;
+			yd *= friction;
+			zd *= friction;
 			if (onGround) {
-				motionX *= 0.7F;
-				motionZ *= 0.7F;
+				xd *= 0.7F;
+				zd *= 0.7F;
 			}
 			
 		}
 	}
 	
-	@Override public float getScale(float scaleFactor) {
-		return super.getScale(scaleFactor);
+	@Override public float getQuadSize(float scaleFactor) {
+		return super.getQuadSize(scaleFactor);
 	}
 	
 	@NotNull @Override public
@@ -97,7 +97,7 @@ public class JetpackParticle extends SpriteTexturedParticle {
 		}
 		
 		@Nullable @Override
-		public Particle makeParticle(
+		public Particle createParticle(
 		  @NotNull JetpackParticleData data, @NotNull ClientWorld world,
 		  double x, double y, double z,
 		  double xSpeed, double ySpeed, double zSpeed
@@ -106,7 +106,7 @@ public class JetpackParticle extends SpriteTexturedParticle {
 			  world, x, y, z, xSpeed, ySpeed, zSpeed,
 			  data.tint, data.size, data.life, data.ownPlayer, sprites);
 			//particle.selectSpriteWithAge(sprites);
-			particle.selectSpriteRandomly(sprites);
+			particle.pickSprite(sprites);
 			return particle;
 		}
 	}

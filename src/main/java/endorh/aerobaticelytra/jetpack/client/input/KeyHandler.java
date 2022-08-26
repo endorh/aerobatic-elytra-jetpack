@@ -53,7 +53,7 @@ public class KeyHandler {
 			return;
 		final IFlightData fd = getFlightDataOrDefault(player);
 		
-		if (JETPACK_MODE_KEYBINDING.isPressed()) {
+		if (JETPACK_MODE_KEYBINDING.consumeClick()) {
 			IFlightMode mode = fd.getFlightMode().next(
 			  m -> m.is(JetpackFlightModeTags.JETPACK));
 			fd.setFlightMode(mode);
@@ -70,12 +70,12 @@ public class KeyHandler {
 		
 		final IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(player);
 		if (mode.is(JetpackFlightModeTags.JETPACK) && !player.isOnGround()) {
-			if (jet.updateJumping(movementInput.jump))
+			if (jet.updateJumping(movementInput.jumping))
 				new DJetpackJumpingPacket(jet).send();
 		}
 		if (mode == JetpackFlightModes.JETPACK_HOVER && jet.isFlying()
 		    || mode == JetpackFlightModes.JETPACK_FLIGHT && jet.isJumping()) {
-			if (jet.updateSneaking(movementInput.sneaking)) {
+			if (jet.updateSneaking(movementInput.shiftKeyDown)) {
 				new DJetpackSneakingPacket(jet).send();
 			}
 		}

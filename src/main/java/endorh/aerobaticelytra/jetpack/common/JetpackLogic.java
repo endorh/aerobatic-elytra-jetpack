@@ -17,7 +17,7 @@ public class JetpackLogic {
 		IFlightData fd = getFlightDataOrDefault(player);
 		if (!AerobaticElytraLogic.hasAerobaticElytra(player) ||
 		    !fd.getFlightMode().is(JetpackFlightModeTags.JETPACK)
-		    || player.abilities.isFlying)
+		    || player.abilities.flying)
 			return false;
 		ItemStack elytra = AerobaticElytraLogic.getAerobaticElytra(player);
 		if (elytra.isEmpty())
@@ -27,7 +27,7 @@ public class JetpackLogic {
 			return false;
 		if (player.isCreative())
 			return true;
-		if (elytra.getDamage() >= elytra.getMaxDamage() - 1 || spec.getAbility(FUEL) <= 0)
+		if (elytra.getDamageValue() >= elytra.getMaxDamage() - 1 || spec.getAbility(FUEL) <= 0)
 			return false;
 		return true;
 	}
@@ -43,7 +43,7 @@ public class JetpackLogic {
 		IElytraSpec spec = ElytraSpecCapability.getElytraSpecOrDefault(elytra);
 		if (player.isCreative())
 			return true;
-		return (elytra.getDamage() < elytra.getMaxDamage() - 1 || spec.getAbility(FUEL) > 0)
+		return (elytra.getDamageValue() < elytra.getMaxDamage() - 1 || spec.getAbility(FUEL) > 0)
 		       || player.isCreative();
 	}
 }

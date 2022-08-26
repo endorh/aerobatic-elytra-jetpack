@@ -32,13 +32,13 @@ import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getF
 public class PlayerRendererHandler {
 	public static void onCameraSetup(final CameraSetup event) {
 		final ActiveRenderInfo info = event.getInfo();
-		final Entity entity = info.getRenderViewEntity();
+		final Entity entity = info.getEntity();
 		if (entity instanceof ClientPlayerEntity) {
 			ClientPlayerEntity player = (ClientPlayerEntity) entity;
 			final IFlightData fd = getFlightDataOrDefault(player);
 			final IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(player);
 			if (fd.getFlightMode().is(JetpackFlightModeTags.JETPACK) && jet.isFlying()
-			    && player.isCrouching() && !info.isThirdPerson()) {
+			    && player.isCrouching() && !info.isDetached()) {
 			}
 		}
 	}
@@ -49,7 +49,7 @@ public class PlayerRendererHandler {
 	@SubscribeEvent
 	public static void onRenderPlayerEvent(RenderPlayerEvent.Pre event) {
 		final MatrixStack mStack = event.getMatrixStack();
-		mStack.push();
+		mStack.pushPose();
 		PlayerEntity player = event.getPlayer();
 		if (player instanceof AbstractClientPlayerEntity) {
 			// Cancel limb swing
@@ -63,27 +63,27 @@ public class PlayerRendererHandler {
 			float t = 1F - Interpolator.quadInOut(
 			  smoother.cancelLimbSwingAmountProgress = MathHelper.clamp(
 				 smoother.cancelLimbSwingAmountProgress + step, 0F, 1F));
-			player.limbSwingAmount = t * player.limbSwingAmount;
-			player.prevLimbSwingAmount = t * player.prevLimbSwingAmount;
+			player.animationSpeed = t * player.animationSpeed;
+			player.animationSpeedOld = t * player.animationSpeedOld;
 			
 			if (fd.getFlightMode().is(JetpackFlightModeTags.JETPACK) && jet.isFlying()) {
-				final PlayerModel<AbstractClientPlayerEntity> model = event.getRenderer().getEntityModel();
+				final PlayerModel<AbstractClientPlayerEntity> model = event.getRenderer().getModel();
 				if (jet.isFlying()) {
 					if (player.isCrouching() && !player.isSleeping() && !player.isPassenger()) {
 						player.setPose(Pose.STANDING);
-						model.isSneak = false;
+						model.crouching = false;
 						// Cancel PlayerRenderer#getRenderOffset
 						mStack.translate(0D, 0.125D, 0D);
 					}
 				} else if (player.isCrouching()) {
-					model.isSneak = true;
+					model.crouching = true;
 				}
 			}
 		}
 	}
 	
 	@SubscribeEvent public static void onRenderPlayerEvent(RenderPlayerEvent.Post event) {
-		event.getMatrixStack().pop();
+		event.getMatrixStack().popPose();
 	}
 	
 	private static final Vec3f prop = Vec3f.ZERO.get();
@@ -109,9 +109,9 @@ public class PlayerRendererHandler {
 			prop.mul(event.partialTicks);
 			prop.add(prev);
 			final float yaw = prop.getYaw();
-			mStack.rotate(Vector3f.YP.rotationDegrees(-yaw));
-			mStack.rotate(Vector3f.XP.rotationDegrees(90F + prop.getPitch()));
-			mStack.rotate(Vector3f.YP.rotationDegrees(yaw));
+			mStack.mulPose(Vector3f.YP.rotationDegrees(-yaw));
+			mStack.mulPose(Vector3f.XP.rotationDegrees(90F + prop.getPitch()));
+			mStack.mulPose(Vector3f.YP.rotationDegrees(yaw));
 		}
 	}
 }

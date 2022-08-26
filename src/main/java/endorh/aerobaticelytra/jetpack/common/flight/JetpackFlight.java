@@ -40,7 +40,6 @@ import static endorh.aerobaticelytra.common.item.IAbility.Ability.FUEL;
 import static endorh.util.math.Vec3f.PI_HALF;
 import static endorh.util.math.Vec3f.TO_RAD;
 import static java.lang.Math.*;
-import static net.minecraft.util.math.MathHelper.lerp;
 
 /**
  * Jetpack flight physics
@@ -76,28 +75,28 @@ public class JetpackFlight {
 		}
 		boolean cancel = false;
 		if (!data.isFlying() && fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
-		    && player.ticksExisted - data.getLastFlight() > 5) {
+		    && player.tickCount - data.getLastFlight() > 5) {
 			// Keep hover level
 			LOGGER.debug("Taking off");
 			data.setFlying(true);
-			if (!player.world.isRemote)
+			if (!player.level.isClientSide)
 				new SJetpackFlyingPacket(player, data).sendTracking();
-			if (player.ticksExisted - data.getLastGround() == 1) {
-				double y = player.getPosY() - floor(player.getPosY());
-				double f = player.getMotion().y;
+			if (player.tickCount - data.getLastGround() == 1) {
+				double y = player.getY() - floor(player.getY());
+				double f = player.getDeltaMovement().y;
 				if (y >= 0.7D && f <= 0D && f >= -0.2D) {
 					data.updateSneaking(false);
 					LOGGER.debug("Moving up by " + (1F - y));
 					motionVec.set(0F, 1F-(float)y, 0F);
 					player.move(MoverType.SELF, motionVec.toVector3d());
-					motionVec.set(player.getMotion());
+					motionVec.set(player.getDeltaMovement());
 					motionVec.y = 0F;
-					player.setMotion(motionVec.toVector3d());
+					player.setDeltaMovement(motionVec.toVector3d());
 				}
 			}
 		}
 		if (data.isFlying()) {
-			motionVec.set(player.getMotion());
+			motionVec.set(player.getDeltaMovement());
 			double grav = TravelHandler.travelGravity(player);
 			
 			if (fd.isFlightMode(JetpackFlightModes.JETPACK_FLIGHT)
@@ -122,10 +121,10 @@ public class JetpackFlight {
 			
 			if (player.isOnGround()) {
 				data.setFlying(false);
-				if (!player.world.isRemote)
+				if (!player.level.isClientSide)
 					new SJetpackFlyingPacket(player, data).sendTracking();
 				data.setSneaking(false);
-				if (player.world.isRemote) {
+				if (player.level.isClientSide) {
 					if (ClientConfig.disable_hover_when_landing) {
 						if (fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER))
 							fd.setFlightMode(JetpackFlightModes.JETPACK_FLIGHT);
@@ -134,15 +133,15 @@ public class JetpackFlight {
 				}
 			}
 		} else if (!player.isOnGround()) {
-			if (player.ticksExisted - data.getLastGround() > 1) {
+			if (player.tickCount - data.getLastGround() > 1) {
 				data.setFlying(true);
-				if (!player.world.isRemote)
+				if (!player.level.isClientSide)
 					new SJetpackFlyingPacket(player, data).sendTracking();
 			}
 		} else if (player.isOnGround()) {
-			if (player.ticksExisted - data.getLastGround() == 1)
+			if (player.tickCount - data.getLastGround() == 1)
 				onNonFlightTravel(player, travelVector);
-			data.setLastGround(player.ticksExisted);
+			data.setLastGround(player.tickCount);
 		}
 		return cancel;
 	}
@@ -174,18 +173,18 @@ public class JetpackFlight {
 			float targetPolar = -PI_HALF - flight.tilt_range_rad;
 			float targetAzimuth = (float) atan2(
 			  Float.compare((float) travelVector.z, 0F),
-			  Float.compare((float) travelVector.x, 0F)) + player.rotationYaw * TO_RAD + PI_HALF;
+			  Float.compare((float) travelVector.x, 0F)) + player.yRot * TO_RAD + PI_HALF;
 			targetVec.set(targetAzimuth, targetPolar, false);
 		} else targetVec.set(0F, 1F, 0F);
 		propVec.lerp(targetVec, 0.2F);
 		propVec.unitary();
 		
 		if (data.isJumping()) {
-			float prop = lerp(
+			float prop = MathHelper.lerp(
 			  heat, flight.propulsion_base_tick, flight.propulsion_max_tick);
-			float y = (float)player.getPosY();
+			float y = (float)player.getY();
 			if (y > Config.height_penalty.min_height) {
-				prop = lerp(
+				prop = MathHelper.lerp(
 				  MathHelper.clamp((y - Config.height_penalty.min_height) /
 				                   Config.height_penalty.range, 0F, 1F),
 				  prop, prop * height_penalty.penalty
@@ -207,20 +206,20 @@ public class JetpackFlight {
 			motionVec.y -= grav;
 			motionVec.mul(0.99F, 0.98F, 0.99F); // Same as the elytra
 			
-			player.setMotion(motionVec.toVector3d());
-			player.move(MoverType.SELF, player.getMotion());
-			if (!player.world.isRemote)
+			player.setDeltaMovement(motionVec.toVector3d());
+			player.move(MoverType.SELF, player.getDeltaMovement());
+			if (!player.level.isClientSide)
 				new SJetpackMotionPacket(player).sendTracking();
-			player.addStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
-			               (int) round(player.getMotion().length() * 100F));
+			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
+			               (int) round(player.getDeltaMovement().length() * 100F));
 			if (player instanceof ServerPlayerEntity)
 				TravelHandler.resetFloatingTickCount((ServerPlayerEntity) player);
-			data.setLastFlight(player.ticksExisted);
+			data.setLastFlight(player.tickCount);
 			
 			if (AerobaticElytraLogic.isClientPlayerEntity(player))
 				new DJetpackPropulsionVectorPacket(data).send();
-			if (player.world.isRemote) {
-				motionVec.set(player.getMotion());
+			if (player.level.isClientSide) {
+				motionVec.set(player.getDeltaMovement());
 				JetpackTrail.addParticles(player, propVec, motionVec);
 				if (data.isJumping() && data.updatePlayingSound(true))
 					new JetpackSound(player).play();
@@ -236,7 +235,7 @@ public class JetpackFlight {
 	
 	public static void grantExtraFloatImmunity(ServerPlayerEntity player) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
-		final int flying = player.ticksExisted - data.getLastFlight();
+		final int flying = player.tickCount - data.getLastFlight();
 		if (flying < 0) {
 			data.setLastFlight(0);
 		} else if (network.allowed_extra_float_ticks == 0
@@ -267,7 +266,7 @@ public class JetpackFlight {
 		float vProp = data.getHoverPropulsion();
 		float vTarget = data.isJumping()? 1F : 0F;
 		vTarget -= data.isSneaking()? 1F : 0F;
-		vProp = lerp(signum(vTarget) != signum(vProp)? 0.5F : 0.1F, vProp, vTarget);
+		vProp = MathHelper.lerp(signum(vTarget) != signum(vProp)? 0.5F : 0.1F, vProp, vTarget);
 		data.setHoverPropulsion(vProp);
 		vProp *= spec.getAbility(JetpackAbilities.HOVER);
 		
@@ -278,7 +277,7 @@ public class JetpackFlight {
 			float targetPolar = -PI_HALF - flight.tilt_range_rad;
 			float targetAzimuth = (float) atan2(
 			  Float.compare((float) travelVector.z, 0F),
-			  Float.compare((float) travelVector.x, 0F)) + player.rotationYaw * TO_RAD + PI_HALF;
+			  Float.compare((float) travelVector.x, 0F)) + player.yRot * TO_RAD + PI_HALF;
 			targetVec.set(targetAzimuth, targetPolar, false);
 		} else
 			targetVec.set(0F, 1F, 0F);
@@ -295,11 +294,11 @@ public class JetpackFlight {
 			brake.mul(flight.hover_horizontal_speed_tick / brake.norm());
 			motionVec.sub(brake);
 		} else {
-			motionVec.x = lerp(
+			motionVec.x = MathHelper.lerp(
 			  signum(propVec.x) != signum(motionVec.x)? 0.5F : 0.2F, motionVec.x,
 			  propVec.x / horMax * flight.hover_horizontal_speed_tick) * spec.getAbility(
 			  JetpackAbilities.HOVER);
-			motionVec.z = lerp(
+			motionVec.z = MathHelper.lerp(
 			  signum(propVec.z) != signum(motionVec.z)? 0.5F : 0.2F, motionVec.z,
 			  propVec.z / horMax * flight.hover_horizontal_speed_tick) * spec.getAbility(
 			  JetpackAbilities.HOVER);
@@ -307,7 +306,7 @@ public class JetpackFlight {
 		
 		// Vertical movement
 		if (abs(motionVec.y) > flight.hover_vertical_speed_tick * 1.01F) {
-			float prop = lerp(
+			float prop = MathHelper.lerp(
 			  heat, flight.propulsion_base_tick, flight.propulsion_max_tick);
 			prop *= max(spec.getAbility(JetpackAbilities.JETPACK), spec.getAbility(
 			  JetpackAbilities.HOVER));
@@ -318,17 +317,17 @@ public class JetpackFlight {
 			motionVec.y -= grav;
 			motionVec.y -= signum(motionVec.y) * min(prop * propVec.y, abs(motionVec.y));
 			motionVec.mul(0.98F);
-			player.setMotion(motionVec.toVector3d());
-			player.move(MoverType.SELF, player.getMotion());
-			if (!player.world.isRemote)
+			player.setDeltaMovement(motionVec.toVector3d());
+			player.move(MoverType.SELF, player.getDeltaMovement());
+			if (!player.level.isClientSide)
 				new SJetpackMotionPacket(player).sendTracking();
-			player.addStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
-			               (int) round(player.getMotion().length() * 100F));
+			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
+			               (int) round(player.getDeltaMovement().length() * 100F));
 			
 			if (AerobaticElytraLogic.isClientPlayerEntity(player))
 				new DJetpackPropulsionVectorPacket(data).send();
-			if (player.world.isRemote) {
-				motionVec.set(player.getMotion());
+			if (player.level.isClientSide) {
+				motionVec.set(player.getDeltaMovement());
 				JetpackTrail.addParticles(player, propVec, motionVec);
 				if (data.updatePlayingSound(true))
 					new JetpackSound(player).play();
@@ -337,18 +336,18 @@ public class JetpackFlight {
 			motionVec.y = round(
 			  vProp * flight.hover_vertical_speed_tick * 1E6) * 1E-6F;
 			motionVec.mul(0.98F);
-			player.setMotion(motionVec.toVector3d());
-			player.move(MoverType.SELF, player.getMotion());
-			if (!player.world.isRemote)
+			player.setDeltaMovement(motionVec.toVector3d());
+			player.move(MoverType.SELF, player.getDeltaMovement());
+			if (!player.level.isClientSide)
 				new SJetpackMotionPacket(player).sendTracking();
-			player.addStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
-			               (int) round(player.getMotion().length() * 100F));
-			player.addStat(JetpackStats.JETPACK_HOVER_ONE_SECOND, 1);
+			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
+			               (int) round(player.getDeltaMovement().length() * 100F));
+			player.awardStat(JetpackStats.JETPACK_HOVER_ONE_SECOND, 1);
 			
 			if (AerobaticElytraLogic.isClientPlayerEntity(player))
 				new DJetpackPropulsionVectorPacket(data).send();
-			if (player.world.isRemote) {
-				motionVec.set(player.getMotion());
+			if (player.level.isClientSide) {
+				motionVec.set(player.getDeltaMovement());
 				JetpackTrail.addHoverParticles(player, propVec, motionVec);
 				if (data.updatePlayingSound(true))
 					new JetpackSound(player).play();
@@ -356,7 +355,7 @@ public class JetpackFlight {
 		}
 		if (player instanceof ServerPlayerEntity)
 			TravelHandler.resetFloatingTickCount((ServerPlayerEntity) player);
-		data.setLastFlight(player.ticksExisted);
+		data.setLastFlight(player.tickCount);
 		float fuel = Config.fuel.fuel_usage_hover_tick;
 		spec.setAbility(FUEL, max(0F, spec.getAbility(FUEL) - fuel));
 		
@@ -412,12 +411,12 @@ public class JetpackFlight {
 			jet.updatePrevPropulsionVector();
 			if (mode == JetpackFlightModes.JETPACK_FLIGHT && jet.isJumping()) {
 				JetpackTrail.addParticles(
-				  player, jet.getPropulsionVector(), new Vec3f(player.getMotion()));
+				  player, jet.getPropulsionVector(), new Vec3f(player.getDeltaMovement()));
 				if (jet.isJumping() && jet.updatePlayingSound(true))
 					new JetpackSound(player).play();
 			} else if (mode == JetpackFlightModes.JETPACK_HOVER && jet.isFlying()) {
 				JetpackTrail.addHoverParticles(
-				  player, jet.getPropulsionVector(), new Vec3f(player.getMotion()));
+				  player, jet.getPropulsionVector(), new Vec3f(player.getDeltaMovement()));
 				if (jet.updatePlayingSound(true))
 					new JetpackSound(player).play();
 			}
