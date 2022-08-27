@@ -7,9 +7,9 @@ import endorh.util.math.Vec3f;
 import endorh.util.network.DistributedPlayerPacket;
 import endorh.util.network.ServerPlayerPacket;
 import endorh.util.network.ValidatedDistributedPlayerPacket;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 public class JetpackPackets {
 	protected static void registerAll() {
@@ -33,14 +33,14 @@ public class JetpackPackets {
 			sneaking = data.isSneaking();
 		}
 		
-		@Override public void onCommon(PlayerEntity sender, Context ctx) {
+		@Override public void onCommon(Player sender, Context ctx) {
 			IJetpackData target = JetpackDataCapability.getJetpackDataOrDefault(sender);
 			target.setSneaking(sneaking);
 		}
-		@Override public void serialize(PacketBuffer buf) {
+		@Override public void serialize(FriendlyByteBuf buf) {
 			buf.writeBoolean(sneaking);
 		}
-		@Override public void deserialize(PacketBuffer buf) {
+		@Override public void deserialize(FriendlyByteBuf buf) {
 			sneaking = buf.readBoolean();
 		}
 	}
@@ -56,14 +56,14 @@ public class JetpackPackets {
 			jumping = data.isJumping();
 		}
 		
-		@Override public void onCommon(PlayerEntity sender, Context ctx) {
+		@Override public void onCommon(Player sender, Context ctx) {
 			IJetpackData target = JetpackDataCapability.getJetpackDataOrDefault(sender);
 			target.setJumping(jumping);
 		}
-		@Override public void serialize(PacketBuffer buf) {
+		@Override public void serialize(FriendlyByteBuf buf) {
 			buf.writeBoolean(jumping);
 		}
-		@Override public void deserialize(PacketBuffer buf) {
+		@Override public void deserialize(FriendlyByteBuf buf) {
 			jumping = buf.readBoolean();
 		}
 	}
@@ -75,7 +75,7 @@ public class JetpackPackets {
 			propVec = data.getPropulsionVector();
 		}
 		
-		@Override public void onServer(PlayerEntity sender, Context ctx) {
+		@Override public void onServer(Player sender, Context ctx) {
 			IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(sender);
 			validateClamp(propVec.x,
 			              -Config.flight.horizontal_projection_range - 0.01F,
@@ -87,14 +87,14 @@ public class JetpackPackets {
 				propVec.set(jet.getPropulsionVector());
 			} else jet.getPropulsionVector().set(propVec);
 		}
-		@Override public void onClient(PlayerEntity target, Context ctx) {
+		@Override public void onClient(Player target, Context ctx) {
 			IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(target);
 			jet.getPropulsionVector().set(propVec);
 		}
-		@Override public void serialize(PacketBuffer buf) {
+		@Override public void serialize(FriendlyByteBuf buf) {
 			propVec.write(buf);
 		}
-		@Override public void deserialize(PacketBuffer buf) {
+		@Override public void deserialize(FriendlyByteBuf buf) {
 			propVec = Vec3f.read(buf);
 		}
 	}
@@ -102,17 +102,17 @@ public class JetpackPackets {
 	public static class SJetpackMotionPacket extends ServerPlayerPacket {
 		private Vec3f motion;
 		public SJetpackMotionPacket() {}
-		public SJetpackMotionPacket(PlayerEntity player) {
+		public SJetpackMotionPacket(Player player) {
 			super(player);
 			this.motion = new Vec3f(player.getDeltaMovement());
 		}
-		@Override protected void onClient(PlayerEntity player, Context ctx) {
+		@Override protected void onClient(Player player, Context ctx) {
 			player.setDeltaMovement(motion.toVector3d());
 		}
-		@Override protected void serialize(PacketBuffer buf) {
+		@Override protected void serialize(FriendlyByteBuf buf) {
 			motion.write(buf);
 		}
-		@Override protected void deserialize(PacketBuffer buf) {
+		@Override protected void deserialize(FriendlyByteBuf buf) {
 			motion = Vec3f.read(buf);
 		}
 	}
@@ -120,18 +120,18 @@ public class JetpackPackets {
 	public static class SJetpackFlyingPacket extends ServerPlayerPacket {
 		boolean flying;
 		private SJetpackFlyingPacket() {}
-		public SJetpackFlyingPacket(PlayerEntity player, IJetpackData data) {
+		public SJetpackFlyingPacket(Player player, IJetpackData data) {
 			super(player);
 			flying = data.isFlying();
 		}
-		@Override public void onClient(PlayerEntity player, Context ctx) {
+		@Override public void onClient(Player player, Context ctx) {
 			IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(player);
 			jet.setFlying(flying);
 		}
-		@Override public void serialize(PacketBuffer buf) {
+		@Override public void serialize(FriendlyByteBuf buf) {
 			buf.writeBoolean(flying);
 		}
-		@Override public void deserialize(PacketBuffer buf) {
+		@Override public void deserialize(FriendlyByteBuf buf) {
 			flying = buf.readBoolean();
 		}
 	}

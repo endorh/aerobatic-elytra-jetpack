@@ -4,18 +4,18 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.Locale;
 
-import net.minecraft.particles.IParticleData.IDeserializer;
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
-public class JetpackParticleData implements IParticleData {
+public class JetpackParticleData implements ParticleOptions {
 	
 	public final Color tint;
 	public final float size;
@@ -27,7 +27,7 @@ public class JetpackParticleData implements IParticleData {
 		return ModParticles.JETPACK_PARTICLE;
 	}
 	
-	@Override public void writeToNetwork(@NotNull PacketBuffer buf) {
+	@Override public void writeToNetwork(@NotNull FriendlyByteBuf buf) {
 		buf.writeInt(tint.getRGB());
 		buf.writeInt(life);
 		buf.writeFloat(size);
@@ -56,7 +56,7 @@ public class JetpackParticleData implements IParticleData {
 	public JetpackParticleData(Color tintIn, int lifeIn, float sizeIn, boolean ownPlayer) {
 		tint = tintIn;
 		life = lifeIn;
-		size = MathHelper.clamp(sizeIn, 0F, 1F);
+		size = Mth.clamp(sizeIn, 0F, 1F);
 		this.ownPlayer = ownPlayer;
 	}
 	public JetpackParticleData(int lifeIn, float sizeIn, boolean ownPlayer) {
@@ -64,14 +64,14 @@ public class JetpackParticleData implements IParticleData {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static final IDeserializer<JetpackParticleData> DESERIALIZER =
-	  new IDeserializer<JetpackParticleData>() {
+	public static final Deserializer<JetpackParticleData> DESERIALIZER =
+	  new Deserializer<JetpackParticleData>() {
 		@NotNull @Override
 		public JetpackParticleData fromCommand(
 		  @NotNull ParticleType<JetpackParticleData> type, @NotNull StringReader reader
 		) throws CommandSyntaxException {
 			reader.expect(' ');
-			float size = MathHelper.clamp(reader.readFloat(), 0F, 1F);
+			float size = Mth.clamp(reader.readFloat(), 0F, 1F);
 			
 			reader.expect(' ');
 			int life = reader.readInt();
@@ -91,7 +91,7 @@ public class JetpackParticleData implements IParticleData {
 		
 		@Override
 		public JetpackParticleData fromNetwork(
-		  @NotNull ParticleType<JetpackParticleData> type, PacketBuffer buf
+		  @NotNull ParticleType<JetpackParticleData> type, FriendlyByteBuf buf
 		) {
 			int rgb = buf.readInt();
 			int life = buf.readInt();

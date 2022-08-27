@@ -4,7 +4,7 @@ import endorh.aerobaticelytra.jetpack.common.particle.JetpackParticleData;
 import endorh.util.math.Vec3d;
 import endorh.util.math.Vec3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Random;
 
@@ -28,7 +28,7 @@ public class JetpackTrail {
 	 * @param motionVec Motion vector
 	 */
 	public static void addParticles(
-	  PlayerEntity player, Vec3f propulsionVector, Vec3f motionVec) {
+	  Player player, Vec3f propulsionVector, Vec3f motionVec) {
 		posVec.set(player.position());
 		//posVec.add(motionVec);
 		
@@ -119,7 +119,7 @@ public class JetpackTrail {
 	 * @param motionVec Motion vector
 	 */
 	public static void addHoverParticles(
-	  PlayerEntity player, Vec3f propulsionVector, Vec3f motionVec) {
+	  Player player, Vec3f propulsionVector, Vec3f motionVec) {
 		posVec.set(player.position());
 		//posVec.add(motionVec);
 		

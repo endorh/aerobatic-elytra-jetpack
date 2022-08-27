@@ -1,28 +1,28 @@
 package endorh.aerobaticelytra.jetpack.client.particle;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import endorh.aerobaticelytra.jetpack.common.particle.JetpackParticleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.Camera;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.multiplayer.ClientLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 
-public class JetpackParticle extends SpriteTexturedParticle {
+public class JetpackParticle extends TextureSheetParticle {
 	
-	private final IAnimatedSprite sprites;
+	private final SpriteSet sprites;
 	private final float size;
 	private final boolean ownPlayer;
 	
 	protected JetpackParticle(
-	  ClientWorld world, double x, double y, double z,
+	  ClientLevel world, double x, double y, double z,
 	  double speedX, double speedY, double speedZ,
 	  Color tint, float size, int life, boolean ownPlayer,
-	  IAnimatedSprite sprites) {
+	  SpriteSet sprites) {
 		super(world, x, y, z, speedX, speedY, speedZ);
 		this.sprites = sprites;
 		
@@ -44,11 +44,11 @@ public class JetpackParticle extends SpriteTexturedParticle {
 	}
 	
 	@Override public void render(
-	  @NotNull IVertexBuilder buffer, @NotNull ActiveRenderInfo renderInfo, float partialTicks
+	  @NotNull VertexConsumer buffer, @NotNull Camera renderInfo, float partialTicks
 	) {
 		if (age < 1) // Weird things
 			return;
-		if (!ownPlayer || Minecraft.getInstance().options.getCameraType() != PointOfView.FIRST_PERSON) {
+		if (!ownPlayer || Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) {
 			//selectSpriteWithAge(sprites);
 			pickSprite(sprites);
 			quadSize = size * (1F - (float)age / lifetime);
@@ -83,13 +83,13 @@ public class JetpackParticle extends SpriteTexturedParticle {
 	}
 	
 	@NotNull @Override public
-	IParticleRenderType getRenderType() {
-		return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+	ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
 	}
 	
-	public static class Factory implements IParticleFactory<JetpackParticleData> {
-		private final IAnimatedSprite sprites;
-		public Factory(IAnimatedSprite sprite) {
+	public static class Factory implements ParticleProvider<JetpackParticleData> {
+		private final SpriteSet sprites;
+		public Factory(SpriteSet sprite) {
 			sprites = sprite;
 		}
 		public Factory() {
@@ -98,7 +98,7 @@ public class JetpackParticle extends SpriteTexturedParticle {
 		
 		@Nullable @Override
 		public Particle createParticle(
-		  @NotNull JetpackParticleData data, @NotNull ClientWorld world,
+		  @NotNull JetpackParticleData data, @NotNull ClientLevel world,
 		  double x, double y, double z,
 		  double xSpeed, double ySpeed, double zSpeed
 		) {

@@ -9,9 +9,9 @@ import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.aerobaticelytra.jetpack.client.render.model.AerobaticJetpackPoses;
 import endorh.aerobaticelytra.jetpack.common.JetpackLogic;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -51,17 +51,17 @@ public enum JetpackFlightModes implements IEnumFlightMode {
 	
 	private final Set<ResourceLocation> tags = new HashSet<>();
 	
-	private final BiPredicate<PlayerEntity, Vector3d> flightHandler;
-	private final BiConsumer<PlayerEntity, Vector3d> nonFlightHandler;
-	private final Consumer<PlayerEntity> remoteFlightHandler;
-	private final Consumer<PlayerEntity> remoteNonFlightHandler;
+	private final BiPredicate<Player, Vec3> flightHandler;
+	private final BiConsumer<Player, Vec3> nonFlightHandler;
+	private final Consumer<Player> remoteFlightHandler;
+	private final Consumer<Player> remoteNonFlightHandler;
 	
 	JetpackFlightModes(
 	  boolean shouldCycle, int order, int u, int v,
-	  BiPredicate<PlayerEntity, Vector3d> flightHandler,
-	  @Nullable BiConsumer<PlayerEntity, Vector3d> nonFlightHandler,
-	  @Nullable Consumer<PlayerEntity> remoteFlightHandler,
-	  @Nullable Consumer<PlayerEntity> remoteNonFlightHandler,
+	  BiPredicate<Player, Vec3> flightHandler,
+	  @Nullable BiConsumer<Player, Vec3> nonFlightHandler,
+	  @Nullable Consumer<Player> remoteFlightHandler,
+	  @Nullable Consumer<Player> remoteNonFlightHandler,
 	  ResourceLocation... tags
 	) {
 		this.shouldCycle = shouldCycle;
@@ -89,16 +89,16 @@ public enum JetpackFlightModes implements IEnumFlightMode {
 		return order;
 	}
 	
-	@Override public BiPredicate<PlayerEntity, Vector3d> getFlightHandler() {
+	@Override public BiPredicate<Player, Vec3> getFlightHandler() {
 		return flightHandler;
 	}
-	@Override public @Nullable BiConsumer<PlayerEntity, Vector3d> getNonFlightHandler() {
+	@Override public @Nullable BiConsumer<Player, Vec3> getNonFlightHandler() {
 		return nonFlightHandler;
 	}
-	@Override public @Nullable Consumer<PlayerEntity> getRemoteFlightHandler() {
+	@Override public @Nullable Consumer<Player> getRemoteFlightHandler() {
 		return remoteFlightHandler;
 	}
-	@Override public @Nullable Consumer<PlayerEntity> getRemoteNonFlightHandler() {
+	@Override public @Nullable Consumer<Player> getRemoteNonFlightHandler() {
 		return remoteNonFlightHandler;
 	}
 	
@@ -117,7 +117,7 @@ public enum JetpackFlightModes implements IEnumFlightMode {
 	}
 	
 	@Override
-	public IElytraPose getElytraPose(PlayerEntity player) {
+	public IElytraPose getElytraPose(Player player) {
 		IFlightData fd = getFlightDataOrDefault(player);
 		final IJetpackData jet = getJetpackDataOrDefault(player);
 		return !player.isOnGround() && JetpackLogic.canUseJetpack(player)

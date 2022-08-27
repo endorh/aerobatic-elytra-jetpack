@@ -27,11 +27,11 @@ plugins {
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
 val modVersion = "0.2.17"
-val mcVersion = "1.16.5"
-val forge = "36.1.0"
+val mcVersion = "1.17.1"
+val forge = "37.1.1"
 val forgeVersion = "$mcVersion-$forge"
 val mappingsChannel = "official"
-val mappingsVersion = "1.16.5"
+val mappingsVersion = "1.17.1"
 
 group = modGroup
 version = modVersion
@@ -64,15 +64,9 @@ val simpleConfigVersion = "1.0.+"
 val endorhUtilVersion = "0.5.+"
 
 // Integration
-val jeiVersion = "7.6.1.75"
-val curiosVersion = "1.16.5-4.0.5.0"
-val caelusVersion = "1.16.5-2.1.3.0"
-
-val curiousElytraVersion = "317716:3231248"
-val customizableElytraVersion = "440047:3248968"
-val colytraVersion = "280200:3113926"
-val bookshelfVersion = "228525:3241077"
-val additionalBannersVersion = "230137:3170181"
+val jeiVersion = "8.3.1.62"
+val curiosVersion = "1.17.1-5.0.2.7"
+val caelusVersion = "1.17.1-3.0.0.2"
 
 val jarAttributes = mapOf(
 	"Specification-Title"      to modId,
@@ -115,7 +109,7 @@ sourceSets.main.get().resources {
 
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(8))
+		languageVersion.set(JavaLanguageVersion.of(16))
 	}
 }
 
@@ -231,19 +225,19 @@ dependencies {
 	runtimeOnly(fg.deobf("mezz.jei:jei-$mcVersion:$jeiVersion"))
 
 	// Curios API
-	runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:$curiosVersion"))
+	// runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:$curiosVersion"))
 
 	// Caelus API
-	runtimeOnly(fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion"))
+	// runtimeOnly(fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion"))
 
 	// Curious Elytra
-	runtimeOnly(fg.deobf("curse.maven:curiouselytra-$curiousElytraVersion"))
+	// runtimeOnly(fg.deobf("curse.maven:curiouselytra-317716:3569454"))
 
 	// Colytra
-	runtimeOnly(fg.deobf("curse.maven:colytra-$colytraVersion"))
+	// runtimeOnly(fg.deobf("curse.maven:colytra-280200:3608030"))
 
 	// Customizable Elytra
-	runtimeOnly(fg.deobf("curse.maven:customizableelytra-$customizableElytraVersion"))
+	// runtimeOnly(fg.deobf("curse.maven:customizableelytra-440047:3541081"))
 
 	// Additional Banners
 	// runtimeOnly("curse.maven:bookshelf-$bookshelfVersion:deobf")

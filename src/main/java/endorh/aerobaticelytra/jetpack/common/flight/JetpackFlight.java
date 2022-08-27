@@ -23,12 +23,12 @@ import endorh.aerobaticelytra.jetpack.network.JetpackPackets.SJetpackFlyingPacke
 import endorh.aerobaticelytra.jetpack.network.JetpackPackets.SJetpackMotionPacket;
 import endorh.aerobaticelytra.network.AerobaticPackets.DFlightModePacket;
 import endorh.util.math.Vec3f;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -56,10 +56,10 @@ public class JetpackFlight {
 	/**
 	 * Handle a jetpack flight tick
 	 * @param player Player flying
-	 * @param travelVector Travel vector from {@link LivingEntity#travel}
+	 * @param travelVector Travel vector from {@link LivingEntity#travel(Vec3)}
 	 * @return True if default travel handling should be cancelled
 	 */
-	public static boolean onJetpackTravel(PlayerEntity player, Vector3d travelVector) {
+	public static boolean onJetpackTravel(Player player, Vec3 travelVector) {
 		IFlightData fd = getFlightDataOrDefault(player);
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
@@ -68,8 +68,8 @@ public class JetpackFlight {
 			data.updatePrevPropulsionVector();
 			vec.add(YP);
 			vec.unitary();
-			if (player instanceof ServerPlayerEntity) {
-				grantExtraFloatImmunity((ServerPlayerEntity) player);
+			if (player instanceof ServerPlayer) {
+				grantExtraFloatImmunity((ServerPlayer) player);
 			}
 			return false;
 		}
@@ -149,20 +149,20 @@ public class JetpackFlight {
 	/**
 	 * Handle a single jetpack flight tick
 	 * @param player Player flying
-	 * @param travelVector Travel vector from {@link LivingEntity#travel}
+	 * @param travelVector Travel vector from {@link LivingEntity#travel(Vec3)}
 	 * @param motionVec Player motion vector to update
 	 * @param grav Gravity applied
 	 * @return True if default travel handling should be cancelled
 	 */
 	public static boolean onJetpackFlight(
-	  PlayerEntity player, Vector3d travelVector, Vec3f motionVec, double grav
+	  Player player, Vec3 travelVector, Vec3f motionVec, double grav
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
 		//LOGGER.debug("Jumping: " + isJumping);
 		
 		float heat = data.getHeat();
-		heat = MathHelper.clamp(
+		heat = Mth.clamp(
 		  heat + (data.isJumping() ? flight.charge_per_tick : -flight.cooldown_per_tick),
 		  0F, 1F);
 		data.setHeat(heat);
@@ -173,19 +173,19 @@ public class JetpackFlight {
 			float targetPolar = -PI_HALF - flight.tilt_range_rad;
 			float targetAzimuth = (float) atan2(
 			  Float.compare((float) travelVector.z, 0F),
-			  Float.compare((float) travelVector.x, 0F)) + player.yRot * TO_RAD + PI_HALF;
+			  Float.compare((float) travelVector.x, 0F)) + player.getYRot() * TO_RAD + PI_HALF;
 			targetVec.set(targetAzimuth, targetPolar, false);
 		} else targetVec.set(0F, 1F, 0F);
 		propVec.lerp(targetVec, 0.2F);
 		propVec.unitary();
 		
 		if (data.isJumping()) {
-			float prop = MathHelper.lerp(
+			float prop = Mth.lerp(
 			  heat, flight.propulsion_base_tick, flight.propulsion_max_tick);
 			float y = (float)player.getY();
 			if (y > Config.height_penalty.min_height) {
-				prop = MathHelper.lerp(
-				  MathHelper.clamp((y - Config.height_penalty.min_height) /
+				prop = Mth.lerp(
+				  Mth.clamp((y - Config.height_penalty.min_height) /
 				                   Config.height_penalty.range, 0F, 1F),
 				  prop, prop * height_penalty.penalty
 				);
@@ -195,7 +195,7 @@ public class JetpackFlight {
 			float consume = prop / flight.propulsion_max_tick;
 			float fuel = consume * Config.fuel.fuel_usage_linear_tick +
 			             consume * consume * Config.fuel.fuel_usage_quad_tick +
-			             MathHelper.sqrt(consume) * Config.fuel.fuel_usage_sqrt_tick;
+			             Mth.sqrt(consume) * Config.fuel.fuel_usage_sqrt_tick;
 			spec.setAbility(FUEL, max(spec.getAbility(FUEL) - fuel, 0F));
 			
 			accVec.set(propVec);
@@ -212,8 +212,8 @@ public class JetpackFlight {
 				new SJetpackMotionPacket(player).sendTracking();
 			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
 			               (int) round(player.getDeltaMovement().length() * 100F));
-			if (player instanceof ServerPlayerEntity)
-				TravelHandler.resetFloatingTickCount((ServerPlayerEntity) player);
+			if (player instanceof ServerPlayer)
+				TravelHandler.resetFloatingTickCount((ServerPlayer) player);
 			data.setLastFlight(player.tickCount);
 			
 			if (AerobaticElytraLogic.isClientPlayerEntity(player))
@@ -225,15 +225,15 @@ public class JetpackFlight {
 					new JetpackSound(player).play();
 			}
 			return true;
-		} else if (player instanceof ServerPlayerEntity) {
-			grantExtraFloatImmunity((ServerPlayerEntity) player);
+		} else if (player instanceof ServerPlayer) {
+			grantExtraFloatImmunity((ServerPlayer) player);
 		}
 		
 		// Do not cancel default logic
 		return false;
 	}
 	
-	public static void grantExtraFloatImmunity(ServerPlayerEntity player) {
+	public static void grantExtraFloatImmunity(ServerPlayer player) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		final int flying = player.tickCount - data.getLastFlight();
 		if (flying < 0) {
@@ -247,26 +247,26 @@ public class JetpackFlight {
 	/**
 	 * Handle a single jetpack hover flight tick
 	 * @param player Player flying
-	 * @param travelVector Travel vector from {@link LivingEntity#travel}
+	 * @param travelVector Travel vector from {@link LivingEntity#travel(Vec3)}
 	 * @param motionVec Player motion vector to update
 	 * @param grav Gravity applied to the player
 	 * @return True if default travel handling should be cancelled
 	 */
 	public static boolean onJetpackHover(
-	  PlayerEntity player, Vector3d travelVector, Vec3f motionVec, double grav
+	  Player player, Vec3 travelVector, Vec3f motionVec, double grav
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
 		// Vertical propulsion
 		
 		float heat = data.getHeat();
-		heat = MathHelper.clamp(heat -flight.cooldown_per_tick, 0F, 1F);
+		heat = Mth.clamp(heat -flight.cooldown_per_tick, 0F, 1F);
 		data.setHeat(heat);
 		
 		float vProp = data.getHoverPropulsion();
 		float vTarget = data.isJumping()? 1F : 0F;
 		vTarget -= data.isSneaking()? 1F : 0F;
-		vProp = MathHelper.lerp(signum(vTarget) != signum(vProp)? 0.5F : 0.1F, vProp, vTarget);
+		vProp = Mth.lerp(signum(vTarget) != signum(vProp)? 0.5F : 0.1F, vProp, vTarget);
 		data.setHoverPropulsion(vProp);
 		vProp *= spec.getAbility(JetpackAbilities.HOVER);
 		
@@ -277,14 +277,14 @@ public class JetpackFlight {
 			float targetPolar = -PI_HALF - flight.tilt_range_rad;
 			float targetAzimuth = (float) atan2(
 			  Float.compare((float) travelVector.z, 0F),
-			  Float.compare((float) travelVector.x, 0F)) + player.yRot * TO_RAD + PI_HALF;
+			  Float.compare((float) travelVector.x, 0F)) + player.getYRot() * TO_RAD + PI_HALF;
 			targetVec.set(targetAzimuth, targetPolar, false);
 		} else
 			targetVec.set(0F, 1F, 0F);
 		propVec.lerp(targetVec, targetVec.y == 1F? 0.4F : 0.2F);
 		propVec.unitary();
 		
-		float horMax = MathHelper.sin(flight.tilt_range_rad);
+		float horMax = Mth.sin(flight.tilt_range_rad);
 		if (horMax < 1E-5F)
 			horMax = 1F;
 		
@@ -294,11 +294,11 @@ public class JetpackFlight {
 			brake.mul(flight.hover_horizontal_speed_tick / brake.norm());
 			motionVec.sub(brake);
 		} else {
-			motionVec.x = MathHelper.lerp(
+			motionVec.x = Mth.lerp(
 			  signum(propVec.x) != signum(motionVec.x)? 0.5F : 0.2F, motionVec.x,
 			  propVec.x / horMax * flight.hover_horizontal_speed_tick) * spec.getAbility(
 			  JetpackAbilities.HOVER);
-			motionVec.z = MathHelper.lerp(
+			motionVec.z = Mth.lerp(
 			  signum(propVec.z) != signum(motionVec.z)? 0.5F : 0.2F, motionVec.z,
 			  propVec.z / horMax * flight.hover_horizontal_speed_tick) * spec.getAbility(
 			  JetpackAbilities.HOVER);
@@ -306,7 +306,7 @@ public class JetpackFlight {
 		
 		// Vertical movement
 		if (abs(motionVec.y) > flight.hover_vertical_speed_tick * 1.01F) {
-			float prop = MathHelper.lerp(
+			float prop = Mth.lerp(
 			  heat, flight.propulsion_base_tick, flight.propulsion_max_tick);
 			prop *= max(spec.getAbility(JetpackAbilities.JETPACK), spec.getAbility(
 			  JetpackAbilities.HOVER));
@@ -353,8 +353,8 @@ public class JetpackFlight {
 					new JetpackSound(player).play();
 			}
 		}
-		if (player instanceof ServerPlayerEntity)
-			TravelHandler.resetFloatingTickCount((ServerPlayerEntity) player);
+		if (player instanceof ServerPlayer)
+			TravelHandler.resetFloatingTickCount((ServerPlayer) player);
 		data.setLastFlight(player.tickCount);
 		float fuel = Config.fuel.fuel_usage_hover_tick;
 		spec.setAbility(FUEL, max(0F, spec.getAbility(FUEL) - fuel));
@@ -370,7 +370,7 @@ public class JetpackFlight {
 	 * Cool the jetpack
 	 */
 	public static void onOtherModeFlightTravel(
-	  PlayerEntity player, @SuppressWarnings("unused") Vector3d travelVector
+	  Player player, @SuppressWarnings("unused") Vec3 travelVector
 	) {
 		IFlightData fd = getFlightDataOrDefault(player);
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
@@ -389,7 +389,7 @@ public class JetpackFlight {
 	}
 	
 	public static void onNonFlightTravel(
-	  PlayerEntity player, @SuppressWarnings("unused") Vector3d travelVector
+	  Player player, @SuppressWarnings("unused") Vec3 travelVector
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		data.setHoverPropulsion(0F);
@@ -403,7 +403,7 @@ public class JetpackFlight {
 		data.setHeat(max(0F, heat - 0.05F));
 	}
 	
-	public static void onRemoteJetpackTravel(PlayerEntity player) {
+	public static void onRemoteJetpackTravel(Player player) {
 		IFlightData data = getFlightDataOrDefault(player);
 		IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IFlightMode mode = data.getFlightMode();
@@ -428,7 +428,7 @@ public class JetpackFlight {
 	 */
 	@SubscribeEvent
 	public static void onBreakSpeed(BreakSpeed event) {
-		final PlayerEntity player = event.getPlayer();
+		final Player player = event.getPlayer();
 		if (player.isOnGround())
 			return;
 		IFlightData data = getFlightDataOrDefault(player);

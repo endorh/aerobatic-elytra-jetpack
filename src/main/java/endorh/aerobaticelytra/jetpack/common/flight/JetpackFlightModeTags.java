@@ -1,6 +1,6 @@
 package endorh.aerobaticelytra.jetpack.common.flight;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import static endorh.aerobaticelytra.jetpack.AerobaticJetpack.prefix;
 

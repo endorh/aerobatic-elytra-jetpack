@@ -4,7 +4,7 @@ import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.simpleconfig.api.SimpleConfig.Type;
 import endorh.simpleconfig.api.annotation.Bind;
 import endorh.simpleconfig.api.entry.FloatEntryBuilder;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import static endorh.simpleconfig.api.ConfigBuilderFactoryProxy.*;
 import static endorh.util.math.Vec3f.TO_RAD;
@@ -60,7 +60,7 @@ public class Config {
 		public static float horizontal_projection_range;
 		
 		static void bake() {
-			horizontal_projection_range = MathHelper.sin(tilt_range_rad);
+			horizontal_projection_range = Mth.sin(tilt_range_rad);
 		}
 	}
 	

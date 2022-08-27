@@ -1,10 +1,10 @@
 package endorh.aerobaticelytra.jetpack.common.flight;
 
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
-import net.minecraft.stats.IStatFormatter;
+import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -25,14 +25,14 @@ public class JetpackStats {
 	
 	public static void register() {
 		JETPACK_FLIGHT_ONE_CM =
-		  reg("jetpack_flight_one_cm", IStatFormatter.DISTANCE);
+		  reg("jetpack_flight_one_cm", StatFormatter.DISTANCE);
 		JETPACK_HOVER_ONE_SECOND =
-		  reg("jetpack_hover_one_second", IStatFormatter.TIME);
+		  reg("jetpack_hover_one_second", StatFormatter.TIME);
 		AerobaticJetpack.logRegistered("Stats");
 	}
 	
 	private static ResourceLocation reg(
-	  String key, IStatFormatter formatter
+	  String key, StatFormatter formatter
 	) {
 		ResourceLocation location = prefix(key);
 		Registry.register(Registry.CUSTOM_STAT, key, location);

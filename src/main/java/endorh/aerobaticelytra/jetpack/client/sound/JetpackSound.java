@@ -8,9 +8,9 @@ import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModes;
 import endorh.util.sound.AudioUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 
 import endorh.util.sound.PlayerTickableSound.IAttenuation;
 import endorh.util.sound.PlayerTickableSound.PlayerTickableSubSound;
@@ -28,12 +28,12 @@ public class JetpackSound extends FadingTickableSound {
 	private IFlightMode mode;
 	private static final float crossFadeLen = 10F;
 	
-	public JetpackSound(PlayerEntity player) {
-		super(player, ModSounds.JETPACK_FLIGHT, SoundCategory.PLAYERS,
+	public JetpackSound(Player player) {
+		super(player, ModSounds.JETPACK_FLIGHT, SoundSource.PLAYERS,
 		      FADE_IN, FADE_OUT, MIN_LEN, ATTENUATION);
 		jetpackData = JetpackDataCapability.getJetpackDataOrDefault(player);
 		hover = new PlayerTickableSubSound(
-		  player, ModSounds.JETPACK_HOVER, SoundCategory.PLAYERS, ATTENUATION);
+		  player, ModSounds.JETPACK_HOVER, SoundSource.PLAYERS, ATTENUATION);
 		mode = flightData.getFlightMode();
 	}
 	
@@ -54,7 +54,7 @@ public class JetpackSound extends FadingTickableSound {
 	
 	@Override public void tick(float fade_factor) {
 		float s = (float)player.getDeltaMovement().length();
-		float vol = MathHelper.lerp(MathHelper.clamp(s, 0F, 0.5F), 0.5F, 1.0F) * fade_factor;
+		float vol = Mth.lerp(Mth.clamp(s, 0F, 0.5F), 0.5F, 1.0F) * fade_factor;
 		if (!flightData.isFlightMode(mode)) {
 			mode = flightData.getFlightMode();
 			crossFadeLeft = (int)crossFadeLen - crossFadeLeft;

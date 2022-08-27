@@ -1,6 +1,6 @@
 package endorh.aerobaticelytra.jetpack.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import endorh.aerobaticelytra.client.render.layer.AerobaticRenderData;
 import endorh.aerobaticelytra.common.capability.IFlightData;
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
@@ -12,15 +12,15 @@ import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModes;
 import endorh.flightcore.events.SetupRotationsRenderPlayerEvent;
 import endorh.util.math.Interpolator;
 import endorh.util.math.Vec3f;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Mth;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityViewRenderEvent.CameraSetup;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -31,10 +31,10 @@ import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getF
 
 public class PlayerRendererHandler {
 	public static void onCameraSetup(final CameraSetup event) {
-		final ActiveRenderInfo info = event.getInfo();
+		final Camera info = event.getInfo();
 		final Entity entity = info.getEntity();
-		if (entity instanceof ClientPlayerEntity) {
-			ClientPlayerEntity player = (ClientPlayerEntity) entity;
+		if (entity instanceof LocalPlayer) {
+			LocalPlayer player = (LocalPlayer) entity;
 			final IFlightData fd = getFlightDataOrDefault(player);
 			final IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(player);
 			if (fd.getFlightMode().is(JetpackFlightModeTags.JETPACK) && jet.isFlying()
@@ -48,10 +48,10 @@ public class PlayerRendererHandler {
 	 */
 	@SubscribeEvent
 	public static void onRenderPlayerEvent(RenderPlayerEvent.Pre event) {
-		final MatrixStack mStack = event.getMatrixStack();
+		final PoseStack mStack = event.getMatrixStack();
 		mStack.pushPose();
-		PlayerEntity player = event.getPlayer();
-		if (player instanceof AbstractClientPlayerEntity) {
+		Player player = event.getPlayer();
+		if (player instanceof AbstractClientPlayer) {
 			// Cancel limb swing
 			AerobaticRenderData smoother = AerobaticRenderData.getAerobaticRenderData(player);
 			IFlightData fd = getFlightDataOrDefault(player);
@@ -61,13 +61,13 @@ public class PlayerRendererHandler {
 			  || jet.isJumping())) ? 0.1F : -0.1F;
 			
 			float t = 1F - Interpolator.quadInOut(
-			  smoother.cancelLimbSwingAmountProgress = MathHelper.clamp(
+			  smoother.cancelLimbSwingAmountProgress = Mth.clamp(
 				 smoother.cancelLimbSwingAmountProgress + step, 0F, 1F));
 			player.animationSpeed = t * player.animationSpeed;
 			player.animationSpeedOld = t * player.animationSpeedOld;
 			
 			if (fd.getFlightMode().is(JetpackFlightModeTags.JETPACK) && jet.isFlying()) {
-				final PlayerModel<AbstractClientPlayerEntity> model = event.getRenderer().getModel();
+				final PlayerModel<AbstractClientPlayer> model = event.getRenderer().getModel();
 				if (jet.isFlying()) {
 					if (player.isCrouching() && !player.isSleeping() && !player.isPassenger()) {
 						player.setPose(Pose.STANDING);
@@ -97,7 +97,7 @@ public class PlayerRendererHandler {
 	) {
 		IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(event.player);
 		if (JetpackLogic.shouldJetpackFly(event.player) && jet.isFlying()) {
-			MatrixStack mStack = event.matrixStack;
+			PoseStack mStack = event.matrixStack;
 			Vec3f propVec = jet.getPropulsionVector();
 			Vec3f prevPropVec = jet.getPrevPropulsionVector();
 			if (propVec.normSquared() < 0.2F || prevPropVec.normSquared() < 0.2F)

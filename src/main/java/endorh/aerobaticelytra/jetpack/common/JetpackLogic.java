@@ -5,19 +5,19 @@ import endorh.aerobaticelytra.common.capability.ElytraSpecCapability;
 import endorh.aerobaticelytra.common.capability.IElytraSpec;
 import endorh.aerobaticelytra.common.capability.IFlightData;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModeTags;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 import static endorh.aerobaticelytra.common.item.IAbility.Ability.FUEL;
 
 
 public class JetpackLogic {
-	public static boolean shouldJetpackFly(PlayerEntity player) {
+	public static boolean shouldJetpackFly(Player player) {
 		IFlightData fd = getFlightDataOrDefault(player);
 		if (!AerobaticElytraLogic.hasAerobaticElytra(player) ||
 		    !fd.getFlightMode().is(JetpackFlightModeTags.JETPACK)
-		    || player.abilities.flying)
+		    || player.getAbilities().flying)
 			return false;
 		ItemStack elytra = AerobaticElytraLogic.getAerobaticElytra(player);
 		if (elytra.isEmpty())
@@ -32,7 +32,7 @@ public class JetpackLogic {
 		return true;
 	}
 	
-	public static boolean canUseJetpack(PlayerEntity player) {
+	public static boolean canUseJetpack(Player player) {
 		IFlightData fd = getFlightDataOrDefault(player);
 		if (!AerobaticElytraLogic.hasAerobaticElytra(player)
 		    || !fd.getFlightMode().is(JetpackFlightModeTags.JETPACK))
