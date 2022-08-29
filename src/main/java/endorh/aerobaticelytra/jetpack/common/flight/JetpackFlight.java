@@ -428,7 +428,7 @@ public class JetpackFlight {
 	 */
 	@SubscribeEvent
 	public static void onBreakSpeed(BreakSpeed event) {
-		final Player player = event.getPlayer();
+		final Player player = event.getEntity();
 		if (player.isOnGround())
 			return;
 		IFlightData data = getFlightDataOrDefault(player);

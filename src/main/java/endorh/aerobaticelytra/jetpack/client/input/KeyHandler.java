@@ -17,37 +17,46 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import org.lwjgl.glfw.GLFW;
 
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 import static net.minecraftforge.client.settings.KeyConflictContext.IN_GAME;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = AerobaticJetpack.MOD_ID)
-public class KeyHandler {
+@OnlyIn(Dist.CLIENT) public class KeyHandler {
 	public static KeyMapping JETPACK_MODE_KEYBINDING;
 	public static final String AEROBATIC_ELYTRA_CATEGORY = "key.aerobaticelytra.category";
 	
-	public static void register() {
-		JETPACK_MODE_KEYBINDING = reg("key.aerobaticelytrajetpack.hover_mode.desc", IN_GAME, 86, AEROBATIC_ELYTRA_CATEGORY);
-		AerobaticJetpack.logRegistered("Key Bindings");
+	@EventBusSubscriber(value = Dist.CLIENT, modid = AerobaticJetpack.MOD_ID, bus = Bus.MOD)
+	public static class Registrar {
+		@SubscribeEvent public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+			JETPACK_MODE_KEYBINDING = reg(
+			  event, "key.aerobaticelytrajetpack.hover_mode.desc", IN_GAME,
+			  GLFW.GLFW_KEY_V, AEROBATIC_ELYTRA_CATEGORY);
+			AerobaticJetpack.logRegistered("Key Mappings");
+		}
 	}
 	
 	@SuppressWarnings("SameParameterValue")
 	private static KeyMapping reg(
+	  RegisterKeyMappingsEvent event,
 	  String translation, IKeyConflictContext context, int keyCode, String category
 	) {
-		final KeyMapping binding = new KeyMapping(translation, context, Type.KEYSYM, keyCode, category);
-		ClientRegistry.registerKeyBinding(binding);
-		return binding;
+		final KeyMapping mapping = new KeyMapping(translation, context, Type.KEYSYM, keyCode, category);
+		event.register(mapping);
+		return mapping;
 	}
 	
 	@SubscribeEvent
-	public static void onKey(KeyInputEvent event) {
+	public static void onKey(InputEvent.Key event) {
 		final Player player = Minecraft.getInstance().player;
 		if (player == null)
 			return;
@@ -64,7 +73,7 @@ public class KeyHandler {
 	
 	@SubscribeEvent
 	public static void onInputUpdateEvent(MovementInputUpdateEvent event) {
-		final Player player = event.getPlayer();
+		final Player player = event.getEntity();
 		final Input movementInput = event.getInput();
 		final IFlightMode mode = getFlightDataOrDefault(player).getFlightMode();
 		

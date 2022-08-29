@@ -39,11 +39,6 @@ public class AerobaticJetpack {
 		LOGGER.debug(MAIN, "Mod loading started");
 	}
 	
-	@SubscribeEvent
-	public static void onClientSetup(FMLClientSetupEvent event) {
-		KeyHandler.register();
-	}
-	
 	public static void logRegistered(String kind) {
 		LOGGER.debug(REGISTER, "Registered " + kind);
 	}

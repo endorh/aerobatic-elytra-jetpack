@@ -3,15 +3,14 @@ package endorh.aerobaticelytra.jetpack.common.particle;
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.aerobaticelytra.jetpack.client.particle.JetpackParticle;
 import endorh.aerobaticelytra.jetpack.common.particle.JetpackParticleData.JetpackParticleType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 import java.util.function.Supplier;
 
@@ -20,28 +19,24 @@ public class ModParticles {
 	public static JetpackParticleType JETPACK_PARTICLE;
 	
 	@SubscribeEvent
-	public static void onParticleTypeRegistration(RegistryEvent.Register<ParticleType<?>> event) {
-		final IForgeRegistry<ParticleType<?>> r = event.getRegistry();
-		JETPACK_PARTICLE = reg(r, JetpackParticleType::new, "jetpack_particle");
-		
-		AerobaticJetpack.logRegistered("Particles");
+	public static void onParticleTypeRegistration(RegisterEvent event) {
+		event.register(ForgeRegistries.PARTICLE_TYPES.getRegistryKey(), r -> {
+			JETPACK_PARTICLE = reg(r, JetpackParticleType::new, "jetpack_particle");
+			AerobaticJetpack.logRegistered("Particles");
+		});
 	}
 	
 	private static <T extends ParticleType<?>> T reg(
-	  IForgeRegistry<ParticleType<?>> registry, Supplier<T> constructor,
-	  @SuppressWarnings("SameParameterValue") String name
+	  RegisterHelper<ParticleType<?>> r, Supplier<T> constructor, String name
 	) {
 		T particleType = constructor.get();
-		particleType.setRegistryName(AerobaticJetpack.prefix(name));
-		registry.register(particleType);
+		r.register(name, particleType);
 		return particleType;
 	}
 	
 	@SubscribeEvent
-	public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
-		ParticleEngine p = Minecraft.getInstance().particleEngine;
-		p.register(JETPACK_PARTICLE, JetpackParticle.Factory::new);
-		
+	public static void onParticleFactoryRegistration(RegisterParticleProvidersEvent event) {
+		event.register(JETPACK_PARTICLE, JetpackParticle.Factory::new);
 		AerobaticJetpack.logRegistered("Particle Factories");
 	}
 }

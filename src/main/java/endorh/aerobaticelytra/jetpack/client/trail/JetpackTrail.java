@@ -28,7 +28,8 @@ public class JetpackTrail {
 	 * @param motionVec Motion vector
 	 */
 	public static void addParticles(
-	  Player player, Vec3f propulsionVector, Vec3f motionVec) {
+	  Player player, Vec3f propulsionVector, Vec3f motionVec
+	) {
 		posVec.set(player.position());
 		//posVec.add(motionVec);
 		
@@ -56,10 +57,10 @@ public class JetpackTrail {
 		normalVector.set(wingVec);
 		normalVector.cross(headVec);
 		normalVector.unitary();
-		normalVector.mul(0.3F);
+		normalVector.mul(0.22F);
 		rocketLeft.add(normalVector);
 		rocketRight.add(normalVector);
-		normalVector.mul(0.2F / 0.3F);
+		normalVector.mul(0.2F / 0.22F);
 		rocketCenterLeft.add(normalVector);
 		rocketCenterRight.add(normalVector);
 		
@@ -147,10 +148,10 @@ public class JetpackTrail {
 		normalVector.set(wingVec);
 		normalVector.cross(headVec);
 		normalVector.unitary();
-		normalVector.mul(0.3F);
+		normalVector.mul(0.22F);
 		rocketLeft.add(normalVector);
 		rocketRight.add(normalVector);
-		normalVector.mul(0.2F / 0.3F);
+		normalVector.mul(0.2F / 0.22F);
 		rocketCenterLeft.add(normalVector);
 		rocketCenterRight.add(normalVector);
 		
@@ -183,9 +184,5 @@ public class JetpackTrail {
 		  new JetpackParticleData(life, size, hide),
 		  rocketCenterRight.x, rocketCenterRight.y, rocketCenterRight.z,
 		  particleMotion.x - x_i, particleMotion.y, particleMotion.z + z_i);
-	}
-	
-	public static void offset() {
-	
 	}
 }

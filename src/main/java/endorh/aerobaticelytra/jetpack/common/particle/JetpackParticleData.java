@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.util.Mth;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
@@ -37,7 +38,7 @@ public class JetpackParticleData implements ParticleOptions {
 	@NotNull @Override public String writeToString() {
 		return String.format(
 		  Locale.ROOT, "%s %.2f %d %d %d %b",
-		  this.getType().getRegistryName(), size,
+		  ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()), size,
 		  tint.getRed(), tint.getGreen(), tint.getBlue(), ownPlayer);
 	}
 	

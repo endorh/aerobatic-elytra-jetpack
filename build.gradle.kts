@@ -26,12 +26,12 @@ plugins {
 
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
-val modVersion = "0.2.18"
-val mcVersion = "1.18.2"
-val forge = "40.1.0"
+val modVersion = "0.2.19"
+val mcVersion = "1.19"
+val forge = "41.1.0"
 val forgeVersion = "$mcVersion-$forge"
 val mappingsChannel = "official"
-val mappingsVersion = "1.18.2"
+val mappingsVersion = "1.19"
 
 group = modGroup
 version = modVersion
@@ -64,9 +64,9 @@ val simpleConfigVersion = "1.0.+"
 val endorhUtilVersion = "0.5.+"
 
 // Integration
-val jeiVersion = "9.7.1.255"
-val curiosVersion = "1.18.2-5.0.7.1"
-val caelusVersion = "1.18.1-3.0.0.2"
+val jeiVersion = "11.1.1.239"
+val curiosVersion = "1.19-5.1.0.4"
+val caelusVersion = "1.19-3.0.0.3"
 
 val jarAttributes = mapOf(
 	"Specification-Title"      to modId,
@@ -222,7 +222,10 @@ dependencies {
 	implementation(fg.deobf("endorh.util:endorutil-$mcVersion:$endorhUtilVersion"))
 
 	// Only for debug
-	runtimeOnly(fg.deobf("mezz.jei:jei-$mcVersion:$jeiVersion"))
+	// JEI
+	// compileOnly(fg.deobf("mezz.jei:jei-$mcVersion-common-api:$jeiVersion"))
+	// compileOnly(fg.deobf("mezz.jei:jei-$mcVersion-forge-api:$jeiVersion"))
+	runtimeOnly(fg.deobf("mezz.jei:jei-$mcVersion-forge:$jeiVersion"))
 
 	// Curios API
 	// runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:$curiosVersion"))

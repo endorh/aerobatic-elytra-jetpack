@@ -1,22 +1,20 @@
 package endorh.aerobaticelytra.jetpack.common.flight;
 
 import endorh.aerobaticelytra.client.render.model.IElytraPose;
-import endorh.aerobaticelytra.common.capability.IFlightData;
 import endorh.aerobaticelytra.common.config.Const;
 import endorh.aerobaticelytra.common.flight.mode.IFlightMode;
-import endorh.aerobaticelytra.common.flight.mode.IFlightMode.IEnumFlightMode;
+import endorh.aerobaticelytra.common.registry.AerobaticElytraRegistries;
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.aerobaticelytra.jetpack.client.render.model.AerobaticJetpackPoses;
 import endorh.aerobaticelytra.jetpack.common.JetpackLogic;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegisterEvent;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -26,12 +24,11 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 import static endorh.aerobaticelytra.jetpack.AerobaticJetpack.prefix;
 import static endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability.getJetpackDataOrDefault;
 
 @EventBusSubscriber(bus = Bus.MOD, modid=AerobaticJetpack.MOD_ID)
-public enum JetpackFlightModes implements IEnumFlightMode {
+public enum JetpackFlightModes implements IFlightMode {
 	JETPACK_FLIGHT(
 	  false, -2000,
 	  0, 0, JetpackFlight::onJetpackTravel, JetpackFlight::onOtherModeFlightTravel,
@@ -109,16 +106,16 @@ public enum JetpackFlightModes implements IEnumFlightMode {
 	@Override public int getToastIconU() { return u; }
 	@Override public int getToastIconV() { return v; }
 	
-	@SubscribeEvent
-	public static void onRegisterFlightModes(RegistryEvent.Register<IFlightMode> event) {
-		final IForgeRegistry<IFlightMode> reg = event.getRegistry();
-		reg.registerAll(JetpackFlightModes.values());
-		AerobaticJetpack.logRegistered("Flight Modes");
+	@SubscribeEvent public static void onRegisterFlightModes(RegisterEvent event) {
+		event.register(AerobaticElytraRegistries.FLIGHT_MODE_REGISTRY_KEY, r -> {
+			for (JetpackFlightModes mode: JetpackFlightModes.values())
+				r.register(mode.name().toLowerCase(), mode);
+			AerobaticJetpack.logRegistered("Flight Modes");
+		});
 	}
 	
 	@Override
 	public IElytraPose getElytraPose(Player player) {
-		IFlightData fd = getFlightDataOrDefault(player);
 		final IJetpackData jet = getJetpackDataOrDefault(player);
 		return !player.isOnGround() && JetpackLogic.canUseJetpack(player)
 		       && (!player.isCrouching() || jet.isFlying())

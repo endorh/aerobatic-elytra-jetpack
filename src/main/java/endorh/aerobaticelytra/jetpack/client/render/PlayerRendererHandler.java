@@ -20,14 +20,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.EntityViewRenderEvent.CameraSetup;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 
 public class PlayerRendererHandler {
-	public static void onCameraSetup(final CameraSetup event) {
+	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
 		final Camera cam = event.getCamera();
 		final Entity entity = cam.getEntity();
 		if (entity instanceof LocalPlayer player) {
@@ -47,7 +47,7 @@ public class PlayerRendererHandler {
 	public static void onRenderPlayerEvent(RenderPlayerEvent.Pre event) {
 		final PoseStack mStack = event.getPoseStack();
 		mStack.pushPose();
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		if (player instanceof AbstractClientPlayer) {
 			// Cancel limb swing
 			AerobaticRenderData smoother = AerobaticRenderData.getAerobaticRenderData(player);
