@@ -26,12 +26,12 @@ plugins {
 
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
-val modVersion = "0.2.17"
-val mcVersion = "1.17.1"
-val forge = "37.1.1"
+val modVersion = "0.2.18"
+val mcVersion = "1.18.2"
+val forge = "40.1.0"
 val forgeVersion = "$mcVersion-$forge"
 val mappingsChannel = "official"
-val mappingsVersion = "1.17.1"
+val mappingsVersion = "1.18.2"
 
 group = modGroup
 version = modVersion
@@ -57,16 +57,16 @@ val modDescription = """
 val license = "LGPL"
 
 // Dependencies
-val aerobaticElytraVersion = "0.2.18"
+val aerobaticElytraVersion = "0.2.+"
 val flightCoreVersion = "0.5.+"
 val simpleConfigApiVersion = "1.0.+"
 val simpleConfigVersion = "1.0.+"
 val endorhUtilVersion = "0.5.+"
 
 // Integration
-val jeiVersion = "8.3.1.62"
-val curiosVersion = "1.17.1-5.0.2.7"
-val caelusVersion = "1.17.1-3.0.0.2"
+val jeiVersion = "9.7.1.255"
+val curiosVersion = "1.18.2-5.0.7.1"
+val caelusVersion = "1.18.1-3.0.0.2"
 
 val jarAttributes = mapOf(
 	"Specification-Title"      to modId,
@@ -109,7 +109,7 @@ sourceSets.main.get().resources {
 
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(16))
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 
@@ -200,8 +200,8 @@ repositories {
 
 dependencies {
 	// IDE
-	implementation("org.jetbrains:annotations:20.1.0")
-    implementation("org.junit.jupiter:junit-jupiter:5.4.2")
+	implementation("org.jetbrains:annotations:23.0.0")
+    implementation("org.junit.jupiter:junit-jupiter:5.9.0")
 
 	// Minecraft
     "minecraft"("net.minecraftforge:forge:$forgeVersion")
@@ -231,17 +231,20 @@ dependencies {
 	// runtimeOnly(fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion"))
 
 	// Curious Elytra
-	// runtimeOnly(fg.deobf("curse.maven:curiouselytra-317716:3569454"))
+	// runtimeOnly(fg.deobf("curse.maven:elytra-slot-317716:3601975"))
 
 	// Colytra
-	// runtimeOnly(fg.deobf("curse.maven:colytra-280200:3608030"))
+	// runtimeOnly(fg.deobf("curse.maven:colytra-280200:3725170"))
 
 	// Customizable Elytra
-	// runtimeOnly(fg.deobf("curse.maven:customizableelytra-440047:3541081"))
+	// runtimeOnly(fg.deobf("curse.maven:customizableelytra-440047:3728574"))
 
 	// Additional Banners
-	// runtimeOnly("curse.maven:bookshelf-$bookshelfVersion:deobf")
-	// runtimeOnly("curse.maven:additionalbanners-$additionalBannersVersion:deobf")
+	// runtimeOnly("curse.maven:bookshelf-228525:3900932:deobf")
+	// runtimeOnly("curse.maven:additionalbanners-230137:3835686:deobf")
+	
+	// Catalogue
+	// runtimeOnly(fg.deobf("curse.maven:catalogue-459701:3803098"))
 }
 
 // Tasks --------------------------------------------------------------------------

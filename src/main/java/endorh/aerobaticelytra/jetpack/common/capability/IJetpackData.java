@@ -2,12 +2,11 @@ package endorh.aerobaticelytra.jetpack.common.capability;
 
 import endorh.util.capability.ISerializableCapability;
 import endorh.util.math.Vec3f;
-import net.minecraft.nbt.CompoundTag;
 
 /**
  * Capability containing the state of an Aerobatic Elytra Jetpack for a player.
  */
-public interface IJetpackData extends ISerializableCapability<CompoundTag> {
+public interface IJetpackData extends ISerializableCapability {
 	
 	/**
 	 * Check if the player is jetpack flying

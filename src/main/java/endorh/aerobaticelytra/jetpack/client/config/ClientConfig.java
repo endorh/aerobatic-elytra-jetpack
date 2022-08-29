@@ -15,7 +15,7 @@ public class ClientConfig {
 	public static void register() {
 		config(AerobaticJetpack.MOD_ID, Type.CLIENT, ClientConfig.class)
 		  .withBackground("textures/block/light_blue_shulker_box.png")
-		  .add("disable_hover_when_landing", bool(false))
+		  .add("disable_hover_when_landing", yesNo(false))
 		  .n(group("sound")
 		       .caption("master", volume(1F))
 		       .add("jetpack", volume(1F))

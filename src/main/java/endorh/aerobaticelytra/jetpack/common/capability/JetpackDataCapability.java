@@ -5,7 +5,6 @@ import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.util.capability.SerializableCapabilityWrapperProvider;
 import endorh.util.math.Vec3f;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -77,7 +76,7 @@ public class JetpackDataCapability {
 	/**
 	 * Create a serializable provider for a player
 	 */
-	public static ICapabilitySerializable<Tag> createProvider(Player player) {
+	public static ICapabilitySerializable<CompoundTag> createProvider(Player player) {
 		if (CAPABILITY == null) return null;
 		return new SerializableCapabilityWrapperProvider<>(CAPABILITY, null, new JetpackData(player));
 	}

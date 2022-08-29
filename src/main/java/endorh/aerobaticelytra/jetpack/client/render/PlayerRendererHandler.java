@@ -1,9 +1,9 @@
 package endorh.aerobaticelytra.jetpack.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import endorh.aerobaticelytra.client.render.layer.AerobaticRenderData;
 import endorh.aerobaticelytra.common.capability.IFlightData;
-import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.aerobaticelytra.jetpack.common.JetpackLogic;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability;
@@ -12,34 +12,31 @@ import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModes;
 import endorh.flightcore.events.SetupRotationsRenderPlayerEvent;
 import endorh.util.math.Interpolator;
 import endorh.util.math.Vec3f;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.Mth;
-import com.mojang.math.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityViewRenderEvent.CameraSetup;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 
 public class PlayerRendererHandler {
 	public static void onCameraSetup(final CameraSetup event) {
-		final Camera info = event.getInfo();
-		final Entity entity = info.getEntity();
-		if (entity instanceof LocalPlayer) {
-			LocalPlayer player = (LocalPlayer) entity;
+		final Camera cam = event.getCamera();
+		final Entity entity = cam.getEntity();
+		if (entity instanceof LocalPlayer player) {
 			final IFlightData fd = getFlightDataOrDefault(player);
 			final IJetpackData jet = JetpackDataCapability.getJetpackDataOrDefault(player);
-			if (fd.getFlightMode().is(JetpackFlightModeTags.JETPACK) && jet.isFlying()
-			    && player.isCrouching() && !info.isDetached()) {
-			}
+			if (
+			  fd.getFlightMode().is(JetpackFlightModeTags.JETPACK) && jet.isFlying()
+			  && player.isCrouching() && !cam.isDetached()
+			) {}
 		}
 	}
 	
@@ -48,7 +45,7 @@ public class PlayerRendererHandler {
 	 */
 	@SubscribeEvent
 	public static void onRenderPlayerEvent(RenderPlayerEvent.Pre event) {
-		final PoseStack mStack = event.getMatrixStack();
+		final PoseStack mStack = event.getPoseStack();
 		mStack.pushPose();
 		Player player = event.getPlayer();
 		if (player instanceof AbstractClientPlayer) {
@@ -83,7 +80,7 @@ public class PlayerRendererHandler {
 	}
 	
 	@SubscribeEvent public static void onRenderPlayerEvent(RenderPlayerEvent.Post event) {
-		event.getMatrixStack().popPose();
+		event.getPoseStack().popPose();
 	}
 	
 	private static final Vec3f prop = Vec3f.ZERO.get();
