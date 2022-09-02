@@ -33,13 +33,13 @@ public enum JetpackFlightModes implements IFlightMode {
 	  false, -2000,
 	  0, 0, JetpackFlight::onJetpackTravel, JetpackFlight::onOtherModeFlightTravel,
 	  JetpackFlight::onRemoteJetpackTravel, null,
-	  JetpackFlightModeTags.JETPACK),
+	  JetpackFlightModeTags.JETPACK, JetpackFlightModeTags.DASH),
 	JETPACK_HOVER(
 	  false, -1000,
 	  Const.FLIGHT_MODE_TOAST_WIDTH, 0,
 	  JetpackFlight::onJetpackTravel, JetpackFlight::onOtherModeFlightTravel,
 	  JetpackFlight::onRemoteJetpackTravel, null,
-	  JetpackFlightModeTags.JETPACK, JetpackFlightModeTags.HOVER);
+	  JetpackFlightModeTags.JETPACK, JetpackFlightModeTags.HOVER, JetpackFlightModeTags.DASH);
 	
 	private final boolean shouldCycle;
 	private final int order;
