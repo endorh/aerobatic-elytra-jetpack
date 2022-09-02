@@ -5,7 +5,7 @@ import endorh.aerobaticelytra.common.capability.IFlightData;
 import endorh.aerobaticelytra.common.item.IAbility.Ability;
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.aerobaticelytra.jetpack.client.config.ClientConfig;
-import endorh.aerobaticelytra.jetpack.client.sound.ModSounds;
+import endorh.aerobaticelytra.jetpack.client.sound.JetpackSounds;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.config.Config.dash;
 import endorh.aerobaticelytra.jetpack.common.item.JetpackAbilities;
@@ -128,7 +128,7 @@ public class JetpackDash {
 			player.level.addParticle(
 			  new DashParticleData(vec.toVec3d(), duration, !(player instanceof RemotePlayer)),
 			  center.x, center.y, center.z, 0D, 0D, 0D);
-			player.playSound(ModSounds.JETPACK_DASH);
+			player.playSound(JetpackSounds.JETPACK_DASH);
 		}
 		return true;
 	}

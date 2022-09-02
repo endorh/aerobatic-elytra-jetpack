@@ -216,7 +216,7 @@ public class JetpackFlight {
 				TravelHandler.resetFloatingTickCount((ServerPlayer) player);
 			data.setLastFlight(player.tickCount);
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (AerobaticElytraLogic.isLocalPlayer(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.level.isClientSide) {
 				motionVec.set(player.getDeltaMovement());
@@ -324,7 +324,7 @@ public class JetpackFlight {
 			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
 			               (int) round(player.getDeltaMovement().length() * 100F));
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (AerobaticElytraLogic.isLocalPlayer(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.level.isClientSide) {
 				motionVec.set(player.getDeltaMovement());
@@ -344,7 +344,7 @@ public class JetpackFlight {
 			               (int) round(player.getDeltaMovement().length() * 100F));
 			player.awardStat(JetpackStats.JETPACK_HOVER_ONE_SECOND, 1);
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (AerobaticElytraLogic.isLocalPlayer(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.level.isClientSide) {
 				motionVec.set(player.getDeltaMovement());

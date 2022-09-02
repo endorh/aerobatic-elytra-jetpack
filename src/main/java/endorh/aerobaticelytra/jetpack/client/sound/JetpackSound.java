@@ -12,9 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 
-import endorh.util.sound.PlayerTickableSound.IAttenuation;
-import endorh.util.sound.PlayerTickableSound.PlayerTickableSubSound;
-
 public class JetpackSound extends FadingTickableSound {
 	
 	private static final int FADE_IN = 3;
@@ -29,11 +26,11 @@ public class JetpackSound extends FadingTickableSound {
 	private static final float crossFadeLen = 10F;
 	
 	public JetpackSound(Player player) {
-		super(player, ModSounds.JETPACK_FLIGHT, SoundSource.PLAYERS,
+		super(player, JetpackSounds.JETPACK_FLIGHT, SoundSource.PLAYERS,
 		      FADE_IN, FADE_OUT, MIN_LEN, ATTENUATION);
 		jetpackData = JetpackDataCapability.getJetpackDataOrDefault(player);
 		hover = new PlayerTickableSubSound(
-		  player, ModSounds.JETPACK_HOVER, SoundSource.PLAYERS, ATTENUATION);
+		  player, JetpackSounds.JETPACK_HOVER, SoundSource.PLAYERS, ATTENUATION);
 		mode = flightData.getFlightMode();
 	}
 	

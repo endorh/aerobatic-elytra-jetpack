@@ -26,7 +26,7 @@ plugins {
 
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
-val modVersion = "0.2.20"
+val modVersion = "0.2.21"
 val mcVersion = "1.19.2"
 val forge = "43.1.1"
 val forgeVersion = "$mcVersion-$forge"

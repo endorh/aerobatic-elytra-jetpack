@@ -13,7 +13,7 @@ import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 import static endorh.aerobaticelytra.jetpack.AerobaticJetpack.prefix;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = AerobaticJetpack.MOD_ID)
-public class ModSounds {
+public class JetpackSounds {
 	public static SoundEvent JETPACK_FLIGHT;
 	public static SoundEvent JETPACK_HOVER;
 	public static SoundEvent JETPACK_DASH;
