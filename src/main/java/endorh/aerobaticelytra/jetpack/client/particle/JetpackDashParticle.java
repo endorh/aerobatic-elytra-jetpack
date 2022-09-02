@@ -69,6 +69,15 @@ public class JetpackDashParticle extends TextureSheetParticle {
 		} else super.setBoundingBox(bb);
 	}
 	
+	@Override protected void setLocationFromBoundingbox() {
+		if (vector != null) {
+			AABB bb = getBoundingBox();
+			x = vector.x < 0? bb.maxX - 1F : bb.minX + 1F;
+			y = vector.y < 0? bb.maxY - 1F : bb.minY + 1F;
+			z = vector.z < 0? bb.maxZ - 1F : bb.minZ + 1F;
+		} else super.setLocationFromBoundingbox();
+	}
+	
 	@Override public void render(
 	  @NotNull VertexConsumer b, @NotNull Camera camera, float partial
 	) {

@@ -77,7 +77,6 @@ public class JetpackFlight {
 		if (!data.isFlying() && fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
 		    && player.tickCount - data.getLastFlight() > 5) {
 			// Keep hover level
-			LOGGER.debug("Taking off");
 			data.setFlying(true);
 			if (!player.level.isClientSide)
 				new SJetpackFlyingPacket(player, data).sendTracking();
@@ -86,7 +85,6 @@ public class JetpackFlight {
 				double f = player.getDeltaMovement().y;
 				if (y >= 0.7D && f <= 0D && f >= -0.2D) {
 					data.updateSneaking(false);
-					LOGGER.debug("Moving up by " + (1F - y));
 					motionVec.set(0F, 1F-(float)y, 0F);
 					player.move(MoverType.SELF, motionVec.toVector3d());
 					motionVec.set(player.getDeltaMovement());
@@ -216,7 +214,7 @@ public class JetpackFlight {
 				TravelHandler.resetFloatingTickCount((ServerPlayer) player);
 			data.setLastFlight(player.tickCount);
 			
-			if (AerobaticElytraLogic.isLocalPlayer(player))
+			if (player.isLocalPlayer())
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.level.isClientSide) {
 				motionVec.set(player.getDeltaMovement());
@@ -227,8 +225,8 @@ public class JetpackFlight {
 			return true;
 		} else if (player instanceof ServerPlayer) {
 			grantExtraFloatImmunity((ServerPlayer) player);
-		}
-		
+		} else if (player.isLocalPlayer())
+			new DJetpackPropulsionVectorPacket(data).send();
 		// Do not cancel default logic
 		return false;
 	}

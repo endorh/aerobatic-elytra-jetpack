@@ -137,6 +137,8 @@ minecraft {
 			property("forge.logging.console.level", "debug")
 			property("mixin.env.disableRefMap", "true")
 			
+			jvmArg("-XX:+AllowEnhancedClassRedefinition")
+			
 			mods {
 				create(modId) {
 					source(sourceSets.main.get())
@@ -147,10 +149,11 @@ minecraft {
 		create("server") {
 			workingDirectory(file("run"))
 			
-			// Allowed flags: SCAN, REGISTRIES, REGISTRYDUMP
 			property("forge.logging.markers", "REGISTRIES")
 			property("forge.logging.console.level", "debug")
 			property("mixin.env.disableRefMap", "true")
+			
+			jvmArg("-XX:+AllowEnhancedClassRedefinition")
 			
 			arg("nogui")
 			
