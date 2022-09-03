@@ -201,34 +201,12 @@ public class JetpackDash {
 		       : dash.base_water_dash;
 	}
 	
-	/**
-	 * Prevent fall damage during dashes.
-	 */
-	@SubscribeEvent public static void onFallDamage(PlayerFlyableFallEvent event) {
-		Player player = event.getEntity();
-		if (getJetpackDataOrDefault(player).isDashing()) {
-			player.resetFallDistance();
-			event.setCanceled(true);
-		}
-	}
-	
 	@SubscribeEvent public static void onFallDamage(LivingFallEvent event) {
 		if (event.getEntity() instanceof Player player) {
 			if (getJetpackDataOrDefault(player).isDashing()) {
 				player.resetFallDistance();
 				event.setCanceled(true);
 			}
-		}
-	}
-	
-	@SubscribeEvent public static void onFallDamage(LivingDamageEvent event) {
-		if (
-		  event.getSource() == DamageSource.FALL
-		  && event.getEntity() instanceof Player player
-		  && getJetpackDataOrDefault(player).isDashing()
-		) {
-			player.resetFallDistance();
-			event.setCanceled(true);
 		}
 	}
 }
