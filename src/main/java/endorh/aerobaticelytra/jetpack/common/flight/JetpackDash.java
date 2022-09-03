@@ -5,6 +5,7 @@ import endorh.aerobaticelytra.common.capability.IFlightData;
 import endorh.aerobaticelytra.common.item.IAbility.Ability;
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
 import endorh.aerobaticelytra.jetpack.client.config.ClientConfig;
+import endorh.aerobaticelytra.jetpack.client.config.ClientConfig.sound;
 import endorh.aerobaticelytra.jetpack.client.sound.JetpackSounds;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.config.Config.dash;
@@ -123,12 +124,12 @@ public class JetpackDash {
 		int duration = getDashDuration(player);
 		int cooldown = getDashCooldown(player);
 		data.startDash(player.tickCount, vec, duration, cooldown);
-		if (player.level.isClientSide) {
+		if (player.getLevel().isClientSide()) {
 			Vec3 center = player.getBoundingBox().getCenter();
 			player.level.addParticle(
 			  new DashParticleData(vec.toVec3d(), duration, !(player instanceof RemotePlayer)),
 			  center.x, center.y, center.z, 0D, 0D, 0D);
-			player.playSound(JetpackSounds.JETPACK_DASH);
+			player.playSound(JetpackSounds.JETPACK_DASH, sound.dash, 1F);
 		}
 		return true;
 	}

@@ -18,7 +18,8 @@ public class ClientConfig {
 		  .n(group("sound")
 		       .caption("master", volume(1F))
 		       .add("jetpack", volume(1F))
-		       .add("hover", volume(1F)))
+		       .add("hover", volume(1F))
+		       .add("dash", volume(1F)))
 		  .buildAndRegister();
 	}
 	
@@ -29,10 +30,12 @@ public class ClientConfig {
 		@Bind public static float master;
 		@Bind public static float jetpack;
 		@Bind public static float hover;
+		@Bind public static float dash;
 		
 		static void bake() {
 			jetpack *= master;
 			hover *= master;
+			dash *= master;
 		}
 	}
 }
