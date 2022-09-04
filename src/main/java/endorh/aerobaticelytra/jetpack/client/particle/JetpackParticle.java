@@ -92,9 +92,6 @@ public class JetpackParticle extends SpriteTexturedParticle {
 		public Factory(IAnimatedSprite sprite) {
 			sprites = sprite;
 		}
-		public Factory() {
-			throw new UnsupportedOperationException("Use the Factory(IAnimatedSprite) constructor");
-		}
 		
 		@Nullable @Override
 		public Particle makeParticle(

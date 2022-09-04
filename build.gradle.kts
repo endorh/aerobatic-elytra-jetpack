@@ -26,7 +26,7 @@ plugins {
 
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
-val modVersion = "0.2.17"
+val modVersion = "0.2.18"
 val mcVersion = "1.16.5"
 val forge = "36.1.0"
 val forgeVersion = "$mcVersion-$forge"
@@ -57,7 +57,7 @@ val modDescription = """
 val license = "LGPL"
 
 // Dependencies
-val aerobaticElytraVersion = "0.2.18"
+val aerobaticElytraVersion = "0.2.+"
 val flightCoreVersion = "0.5.+"
 val simpleConfigApiVersion = "1.0.+"
 val simpleConfigVersion = "1.0.+"

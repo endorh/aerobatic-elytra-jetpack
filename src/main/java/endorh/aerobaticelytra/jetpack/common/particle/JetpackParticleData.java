@@ -22,7 +22,7 @@ public class JetpackParticleData implements IParticleData {
 	
 	@NotNull @Override
 	public ParticleType<JetpackParticleData> getType() {
-		return ModParticles.JETPACK_PARTICLE;
+		return AerobaticJetpackParticles.JETPACK_PARTICLE;
 	}
 	
 	@Override public void write(@NotNull PacketBuffer buf) {
@@ -51,17 +51,18 @@ public class JetpackParticleData implements IParticleData {
 	private JetpackParticleData(int tintRGB, int lifeIn, float sizeIn, boolean ownPlayer) {
 		this(new Color(tintRGB), lifeIn, sizeIn, ownPlayer);
 	}
+	
 	public JetpackParticleData(Color tintIn, int lifeIn, float sizeIn, boolean ownPlayer) {
 		tint = tintIn;
 		life = lifeIn;
 		size = MathHelper.clamp(sizeIn, 0F, 1F);
 		this.ownPlayer = ownPlayer;
 	}
+	
 	public JetpackParticleData(int lifeIn, float sizeIn, boolean ownPlayer) {
 		this(Color.WHITE, lifeIn, sizeIn, ownPlayer);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static final IDeserializer<JetpackParticleData> DESERIALIZER =
 	  new IDeserializer<JetpackParticleData>() {
 		@NotNull @Override

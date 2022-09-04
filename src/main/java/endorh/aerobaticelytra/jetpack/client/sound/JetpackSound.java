@@ -26,11 +26,11 @@ public class JetpackSound extends FadingTickableSound {
 	private static final float crossFadeLen = 10F;
 	
 	public JetpackSound(PlayerEntity player) {
-		super(player, ModSounds.JETPACK_FLIGHT, SoundCategory.PLAYERS,
+		super(player, JetpackSounds.JETPACK_FLIGHT, SoundCategory.PLAYERS,
 		      FADE_IN, FADE_OUT, MIN_LEN, ATTENUATION);
 		jetpackData = JetpackDataCapability.getJetpackDataOrDefault(player);
 		hover = new PlayerTickableSubSound(
-		  player, ModSounds.JETPACK_HOVER, SoundCategory.PLAYERS, ATTENUATION);
+		  player, JetpackSounds.JETPACK_HOVER, SoundCategory.PLAYERS, ATTENUATION);
 		mode = flightData.getFlightMode();
 	}
 	

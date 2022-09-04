@@ -1,7 +1,9 @@
 package endorh.aerobaticelytra.jetpack.common.particle;
 
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
+import endorh.aerobaticelytra.jetpack.client.particle.JetpackDashParticle;
 import endorh.aerobaticelytra.jetpack.client.particle.JetpackParticle;
+import endorh.aerobaticelytra.jetpack.common.particle.DashParticleData.DashParticleType;
 import endorh.aerobaticelytra.jetpack.common.particle.JetpackParticleData.JetpackParticleType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
@@ -16,13 +18,15 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.function.Supplier;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = AerobaticJetpack.MOD_ID)
-public class ModParticles {
+public class AerobaticJetpackParticles {
 	public static JetpackParticleType JETPACK_PARTICLE;
+	public static DashParticleType DASH_PARTICLE;
 	
 	@SubscribeEvent
 	public static void onParticleTypeRegistration(RegistryEvent.Register<ParticleType<?>> event) {
 		final IForgeRegistry<ParticleType<?>> r = event.getRegistry();
 		JETPACK_PARTICLE = reg(r, JetpackParticleType::new, "jetpack_particle");
+		DASH_PARTICLE = reg(r, DashParticleType::new, "dash_particle");
 		
 		AerobaticJetpack.logRegistered("Particles");
 	}
@@ -41,7 +45,7 @@ public class ModParticles {
 	public static void onParticleFactoryRegistration(ParticleFactoryRegisterEvent event) {
 		ParticleManager p = Minecraft.getInstance().particles;
 		p.registerFactory(JETPACK_PARTICLE, JetpackParticle.Factory::new);
-		
+		p.registerFactory(DASH_PARTICLE, JetpackDashParticle.Factory::new);
 		AerobaticJetpack.logRegistered("Particle Factories");
 	}
 }

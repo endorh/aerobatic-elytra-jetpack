@@ -32,6 +32,19 @@ public class Config {
 			    .add("min_height", number(128))
 			    .add("max_height", number(192))
 			    .add("penalty", number(0.7F)))
+		  .n(group("dash")
+		    // Since these are base values, it's best to not apply any limits to them.
+		    // Besides, it could be funny having negative dash distance or fuel usage.
+		    // Negative times are not supported since Java 17 doesn't support time travel yet.
+		       .add("base_distance", number(4F))
+		       .add("base_duration", ticks(0.3F))
+		       .add("base_fuel_usage", number(0.05F))
+		       .add("base_max_consecutive", number(3))
+		       .add("base_cooldown", ticks(0.8F))
+		       .add("base_vertical_dash", enable(true))
+		       .add("base_ground_dash", enable(true))
+		       .add("base_air_dash", enable(true))
+		       .add("base_water_dash", fraction(0.5F)))
 		  .n(group("network")
 			    .add("allowed_extra_float_time", number(0.0F).min(0)
 			      .field("allowed_extra_float_ticks", t -> {
@@ -43,6 +56,10 @@ public class Config {
 	
 	private static FloatEntryBuilder tick(float value) {
 		return number(value).add_field_scale("tick", 0.05F);
+	}
+	
+	private static FloatEntryBuilder ticks(float value) {
+		return number(value).add_field("ticks", v -> Math.round(v * 20F), Integer.class);
 	}
 	
 	@Bind public static class flight_modes {
@@ -80,6 +97,18 @@ public class Config {
 		static void bake() {
 			range = max_height - min_height;
 		}
+	}
+	
+	@Bind public static class dash {
+		@Bind public static float base_distance;
+		@Bind public static int base_duration_ticks;
+		@Bind public static float base_fuel_usage;
+		@Bind public static int base_max_consecutive;
+		@Bind public static int base_cooldown_ticks;
+		@Bind public static boolean base_vertical_dash;
+		@Bind public static boolean base_ground_dash;
+		@Bind public static boolean base_air_dash;
+		@Bind public static float base_water_dash;
 	}
 	
 	@Bind public static class network {

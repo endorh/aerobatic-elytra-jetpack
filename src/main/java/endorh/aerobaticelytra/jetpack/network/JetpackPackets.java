@@ -3,6 +3,7 @@ package endorh.aerobaticelytra.jetpack.network;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability;
 import endorh.aerobaticelytra.jetpack.common.config.Config;
+import endorh.aerobaticelytra.jetpack.common.flight.JetpackDash;
 import endorh.util.math.Vec3f;
 import endorh.util.network.DistributedPlayerPacket;
 import endorh.util.network.ServerPlayerPacket;
@@ -16,7 +17,8 @@ public class JetpackPackets {
 		DistributedPlayerPacket.with(NetworkHandler.CHANNEL, NetworkHandler.ID_GEN)
 		  .registerLocal(DJetpackSneakingPacket::new)
 		  .registerLocal(DJetpackJumpingPacket::new)
-		  .registerLocal(DJetpackPropulsionVectorPacket::new);
+		  .registerLocal(DJetpackPropulsionVectorPacket::new)
+		  .registerLocal(DJetpackDashPacket::new);
 		ServerPlayerPacket.with(NetworkHandler.CHANNEL, NetworkHandler.ID_GEN)
 		  .register(SJetpackFlyingPacket::new)
 		  .register(SJetpackMotionPacket::new);
@@ -99,12 +101,35 @@ public class JetpackPackets {
 		}
 	}
 	
+	public static class DJetpackDashPacket extends ValidatedDistributedPlayerPacket {
+		Vec3f vector;
+		
+		public DJetpackDashPacket() {}
+		public DJetpackDashPacket(Vec3f vector) {
+			this.vector = vector;
+		}
+		
+		@Override protected void onServer(PlayerEntity sender, Context ctx) {
+			if (!JetpackDash.startDash(sender, vector)) invalidate();
+		}
+		@Override protected void onClient(PlayerEntity sender, Context ctx) {
+			JetpackDash.startDash(sender, vector);
+		}
+		
+		@Override protected void serialize(PacketBuffer buf) {
+			vector.write(buf);
+		}
+		@Override protected void deserialize(PacketBuffer buf) {
+			vector = Vec3f.read(buf);
+		}
+	}
+	
 	public static class SJetpackMotionPacket extends ServerPlayerPacket {
 		private Vec3f motion;
 		public SJetpackMotionPacket() {}
 		public SJetpackMotionPacket(PlayerEntity player) {
 			super(player);
-			this.motion = new Vec3f(player.getMotion());
+			motion = new Vec3f(player.getMotion());
 		}
 		@Override protected void onClient(PlayerEntity player, Context ctx) {
 			player.setMotion(motion.toVector3d());

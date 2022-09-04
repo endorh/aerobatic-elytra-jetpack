@@ -32,9 +32,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import static endorh.aerobaticelytra.common.AerobaticElytraLogic.isClientPlayerEntity;
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 import static endorh.aerobaticelytra.common.item.IAbility.Ability.FUEL;
 import static endorh.util.math.Vec3f.PI_HALF;
@@ -47,7 +46,6 @@ import static net.minecraft.util.math.MathHelper.lerp;
  */
 @EventBusSubscriber(modid = AerobaticJetpack.MOD_ID)
 public class JetpackFlight {
-	private static final Logger LOGGER = LogManager.getLogger();
 	
 	// Cache vectors
 	private static final Vec3f targetVec = Vec3f.ZERO.get();
@@ -78,7 +76,6 @@ public class JetpackFlight {
 		if (!data.isFlying() && fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
 		    && player.ticksExisted - data.getLastFlight() > 5) {
 			// Keep hover level
-			LOGGER.debug("Taking off");
 			data.setFlying(true);
 			if (!player.world.isRemote)
 				new SJetpackFlyingPacket(player, data).sendTracking();
@@ -87,7 +84,6 @@ public class JetpackFlight {
 				double f = player.getMotion().y;
 				if (y >= 0.7D && f <= 0D && f >= -0.2D) {
 					data.updateSneaking(false);
-					LOGGER.debug("Moving up by " + (1F - y));
 					motionVec.set(0F, 1F-(float)y, 0F);
 					player.move(MoverType.SELF, motionVec.toVector3d());
 					motionVec.set(player.getMotion());
@@ -160,7 +156,6 @@ public class JetpackFlight {
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
-		//LOGGER.debug("Jumping: " + isJumping);
 		
 		float heat = data.getHeat();
 		heat = MathHelper.clamp(
@@ -217,7 +212,7 @@ public class JetpackFlight {
 				TravelHandler.resetFloatingTickCount((ServerPlayerEntity) player);
 			data.setLastFlight(player.ticksExisted);
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (isClientPlayerEntity(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.world.isRemote) {
 				motionVec.set(player.getMotion());
@@ -228,7 +223,8 @@ public class JetpackFlight {
 			return true;
 		} else if (player instanceof ServerPlayerEntity) {
 			grantExtraFloatImmunity((ServerPlayerEntity) player);
-		}
+		} else if (isClientPlayerEntity(player))
+			new DJetpackPropulsionVectorPacket(data).send();
 		
 		// Do not cancel default logic
 		return false;
@@ -258,8 +254,8 @@ public class JetpackFlight {
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
-		// Vertical propulsion
 		
+		// Vertical propulsion
 		float heat = data.getHeat();
 		heat = MathHelper.clamp(heat -flight.cooldown_per_tick, 0F, 1F);
 		data.setHeat(heat);
@@ -325,7 +321,7 @@ public class JetpackFlight {
 			player.addStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
 			               (int) round(player.getMotion().length() * 100F));
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (isClientPlayerEntity(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.world.isRemote) {
 				motionVec.set(player.getMotion());
@@ -345,7 +341,7 @@ public class JetpackFlight {
 			               (int) round(player.getMotion().length() * 100F));
 			player.addStat(JetpackStats.JETPACK_HOVER_ONE_SECOND, 1);
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (isClientPlayerEntity(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.world.isRemote) {
 				motionVec.set(player.getMotion());

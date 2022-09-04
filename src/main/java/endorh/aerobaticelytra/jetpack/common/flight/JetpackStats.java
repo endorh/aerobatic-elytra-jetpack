@@ -17,6 +17,7 @@ public class JetpackStats {
 	
 	public static ResourceLocation JETPACK_FLIGHT_ONE_CM;
 	public static ResourceLocation JETPACK_HOVER_ONE_SECOND;
+	public static ResourceLocation JETPACK_DASHES;
 	
 	@SubscribeEvent
 	public static void onCommonSetup(FMLCommonSetupEvent event) {
@@ -28,6 +29,7 @@ public class JetpackStats {
 		  reg("jetpack_flight_one_cm", IStatFormatter.DISTANCE);
 		JETPACK_HOVER_ONE_SECOND =
 		  reg("jetpack_hover_one_second", IStatFormatter.TIME);
+		JETPACK_DASHES = reg("jetpack_dashes", IStatFormatter.DEFAULT);
 		AerobaticJetpack.logRegistered("Stats");
 	}
 	
