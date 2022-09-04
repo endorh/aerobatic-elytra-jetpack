@@ -4,6 +4,11 @@
     "sounds": ["aerobaticelytrajetpack:jetpack_flight"]
   },
   "jetpack.hover": {
+    "subtitle": "aerobaticelytrajetpack.subtitle.jetpack_hover",
     "sounds": ["aerobaticelytrajetpack:jetpack_hover"]
+  },
+  "jetpack.dash": {
+    "subtitle": "aerobaticelytrajetpack.subtitle.jetpack_dash",
+    "sounds": ["aerobaticelytrajetpack:jetpack_dash"]
   }
 }

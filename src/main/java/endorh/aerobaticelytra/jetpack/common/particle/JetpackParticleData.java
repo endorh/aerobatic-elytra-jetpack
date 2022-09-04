@@ -4,19 +4,16 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.Locale;
 
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
-
 public class JetpackParticleData implements ParticleOptions {
-	
 	public final Color tint;
 	public final float size;
 	public final int life;
@@ -24,7 +21,7 @@ public class JetpackParticleData implements ParticleOptions {
 	
 	@NotNull @Override
 	public ParticleType<JetpackParticleData> getType() {
-		return ModParticles.JETPACK_PARTICLE;
+		return AerobaticJetpackParticles.JETPACK_PARTICLE;
 	}
 	
 	@Override public void writeToNetwork(@NotNull FriendlyByteBuf buf) {
@@ -53,19 +50,19 @@ public class JetpackParticleData implements ParticleOptions {
 	private JetpackParticleData(int tintRGB, int lifeIn, float sizeIn, boolean ownPlayer) {
 		this(new Color(tintRGB), lifeIn, sizeIn, ownPlayer);
 	}
+	
 	public JetpackParticleData(Color tintIn, int lifeIn, float sizeIn, boolean ownPlayer) {
 		tint = tintIn;
 		life = lifeIn;
 		size = Mth.clamp(sizeIn, 0F, 1F);
 		this.ownPlayer = ownPlayer;
 	}
+	
 	public JetpackParticleData(int lifeIn, float sizeIn, boolean ownPlayer) {
 		this(Color.WHITE, lifeIn, sizeIn, ownPlayer);
 	}
 	
-	@SuppressWarnings("deprecation")
-	public static final Deserializer<JetpackParticleData> DESERIALIZER =
-	  new Deserializer<JetpackParticleData>() {
+	public static final Deserializer<JetpackParticleData> DESERIALIZER = new Deserializer<>() {
 		@NotNull @Override
 		public JetpackParticleData fromCommand(
 		  @NotNull ParticleType<JetpackParticleData> type, @NotNull StringReader reader
