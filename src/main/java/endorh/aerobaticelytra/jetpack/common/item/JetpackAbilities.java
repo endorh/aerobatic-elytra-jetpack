@@ -11,20 +11,25 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-import java.util.Optional;
-
-import static endorh.aerobaticelytra.common.item.IAbility.DisplayType.SCALE_BOOL;
+import static endorh.aerobaticelytra.common.item.IAbility.DisplayType.*;
 import static endorh.util.text.TextUtil.ttc;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = AerobaticJetpack.MOD_ID)
 public enum JetpackAbilities implements IAbility {
 	JETPACK(ChatFormatting.DARK_RED, 1F, SCALE_BOOL),
 	HOVER(ChatFormatting.GRAY, 1F, SCALE_BOOL),
-	HOVER_MINING(ChatFormatting.GRAY, 0.2F, new DisplayType() {
-		@Override public Optional<MutableComponent> format(IAbility ability, float value) {
-			return value != 0.2F? SCALE.format(ability, value) : Optional.empty();
-		}
-	});
+	HOVER_MINING(ChatFormatting.GRAY, 0.2F, DisplayType.filter(
+	  v -> v != 0.2F, SCALE, HIDE)),
+	DASH_DISTANCE(ChatFormatting.AQUA, 1F, SCALE_NON_ONE),
+	DASH_SPEED(ChatFormatting.AQUA, 1F, SCALE_NON_ONE),
+	DASH_EFFICIENCY(ChatFormatting.AQUA, 1F, SCALE_NON_ONE),
+	DASH_MANEUVERABILITY(ChatFormatting.AQUA, 1F, SCALE_NON_ONE),
+	VERTICAL_DASH(ChatFormatting.AQUA, 0F, BOOL),
+	GROUND_DASH(ChatFormatting.AQUA, 0F, BOOL),
+	AIR_DASH(ChatFormatting.AQUA, 0F, BOOL),
+	WATER_DASH(ChatFormatting.AQUA, 0F, filter(
+	  v -> v != 0, SCALE_NON_ONE, HIDE)),
+	EXTRA_DASHES(ChatFormatting.AQUA, 0F, INTEGER_SUM_NON_ZERO);
 	
 	private final ResourceLocation registryName;
 	private final String jsonName;

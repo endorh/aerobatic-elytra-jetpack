@@ -77,7 +77,6 @@ public class JetpackFlight {
 		if (!data.isFlying() && fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
 		    && player.tickCount - data.getLastFlight() > 5) {
 			// Keep hover level
-			LOGGER.debug("Taking off");
 			data.setFlying(true);
 			if (!player.level.isClientSide)
 				new SJetpackFlyingPacket(player, data).sendTracking();
@@ -86,7 +85,6 @@ public class JetpackFlight {
 				double f = player.getDeltaMovement().y;
 				if (y >= 0.7D && f <= 0D && f >= -0.2D) {
 					data.updateSneaking(false);
-					LOGGER.debug("Moving up by " + (1F - y));
 					motionVec.set(0F, 1F-(float)y, 0F);
 					player.move(MoverType.SELF, motionVec.toVector3d());
 					motionVec.set(player.getDeltaMovement());
@@ -159,7 +157,6 @@ public class JetpackFlight {
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
-		//LOGGER.debug("Jumping: " + isJumping);
 		
 		float heat = data.getHeat();
 		heat = Mth.clamp(
@@ -210,13 +207,14 @@ public class JetpackFlight {
 			player.move(MoverType.SELF, player.getDeltaMovement());
 			if (!player.level.isClientSide)
 				new SJetpackMotionPacket(player).sendTracking();
-			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
-			               (int) round(player.getDeltaMovement().length() * 100F));
+			player.awardStat(
+			  JetpackStats.JETPACK_FLIGHT_ONE_CM,
+			  (int) round(player.getDeltaMovement().length() * 100F));
 			if (player instanceof ServerPlayer)
 				TravelHandler.resetFloatingTickCount((ServerPlayer) player);
 			data.setLastFlight(player.tickCount);
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (player.isLocalPlayer())
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.level.isClientSide) {
 				motionVec.set(player.getDeltaMovement());
@@ -227,8 +225,8 @@ public class JetpackFlight {
 			return true;
 		} else if (player instanceof ServerPlayer) {
 			grantExtraFloatImmunity((ServerPlayer) player);
-		}
-		
+		} else if (player.isLocalPlayer())
+			new DJetpackPropulsionVectorPacket(data).send();
 		// Do not cancel default logic
 		return false;
 	}
@@ -257,8 +255,8 @@ public class JetpackFlight {
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
-		// Vertical propulsion
 		
+		// Vertical propulsion
 		float heat = data.getHeat();
 		heat = Mth.clamp(heat -flight.cooldown_per_tick, 0F, 1F);
 		data.setHeat(heat);
@@ -324,7 +322,7 @@ public class JetpackFlight {
 			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
 			               (int) round(player.getDeltaMovement().length() * 100F));
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (AerobaticElytraLogic.isLocalPlayer(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.level.isClientSide) {
 				motionVec.set(player.getDeltaMovement());
@@ -344,7 +342,7 @@ public class JetpackFlight {
 			               (int) round(player.getDeltaMovement().length() * 100F));
 			player.awardStat(JetpackStats.JETPACK_HOVER_ONE_SECOND, 1);
 			
-			if (AerobaticElytraLogic.isClientPlayerEntity(player))
+			if (AerobaticElytraLogic.isLocalPlayer(player))
 				new DJetpackPropulsionVectorPacket(data).send();
 			if (player.level.isClientSide) {
 				motionVec.set(player.getDeltaMovement());
@@ -370,7 +368,7 @@ public class JetpackFlight {
 	 * Cool the jetpack
 	 */
 	public static void onOtherModeFlightTravel(
-	  Player player, @SuppressWarnings("unused") Vec3 travelVector
+	  Player player, Vec3 travelVector
 	) {
 		IFlightData fd = getFlightDataOrDefault(player);
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
@@ -389,7 +387,7 @@ public class JetpackFlight {
 	}
 	
 	public static void onNonFlightTravel(
-	  Player player, @SuppressWarnings("unused") Vec3 travelVector
+	  Player player, Vec3 travelVector
 	) {
 		IJetpackData data = JetpackDataCapability.getJetpackDataOrDefault(player);
 		data.setHoverPropulsion(0F);

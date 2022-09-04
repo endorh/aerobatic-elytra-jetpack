@@ -113,7 +113,16 @@ public class JetpackDataCapability {
 		private int lastFlight = 0;
 		private int lastGround = 0;
 		
-		private boolean playing = false;
+		private int lastDash = 0;
+		private final Vec3f dashVec = Vec3f.ZERO.get();
+		private final Vec3f dashDirection = Vec3f.ZERO.get();
+		private int dashTicks = 1;
+		private int dashCooldown = 0;
+		private int consecutiveDashes = 0;
+		private float dashProgress = 1F;
+		private boolean dashKeyPressed = false;
+		
+		private boolean playingSound = false;
 		
 		public JetpackData(Player player) {
 			this.player = player;
@@ -181,9 +190,62 @@ public class JetpackDataCapability {
 			this.jumping = jumping;
 		}
 		
+		@Override public boolean isDashing() {
+			return getDashProgress() < 1F;
+		}
+		
+		@Override public int getDashStart() {
+			return lastDash;
+		}
+		@Override public float getDashProgress() {
+			return dashProgress;
+		}
+		@Override public void setDashProgress(float progress) {
+			dashProgress = progress;
+		}
+		
+		@Override public Vec3f getDashVector() {
+			return dashVec;
+		}
+		
+		@Override public Vec3f getDashDirection() {
+			return dashDirection;
+		}
+		
+		@Override public boolean isDashKeyPressed() {
+			return dashKeyPressed;
+		}
+		@Override public void setDashKeyPressed(boolean pressed) {
+			dashKeyPressed = pressed;
+		}
+		
+		@Override public void startDash(int tick, Vec3f dashVector, int ticks, int cooldown) {
+			lastDash = tick;
+			dashProgress = 0F;
+			dashVec.set(dashVector);
+			dashDirection.set(dashVector);
+			dashDirection.unitary();
+			dashTicks = ticks;
+			dashCooldown = cooldown;
+		}
+		
+		@Override public int getConsecutiveDashes() {
+			return consecutiveDashes;
+		}
+		@Override public void setConsecutiveDashes(int dashes) {
+			consecutiveDashes = dashes;
+		}
+		
+		@Override public int getDashTicks() {
+			return dashTicks;
+		}
+		@Override public int getDashCooldown() {
+			return dashCooldown;
+		}
+		
 		@Override public boolean updatePlayingSound(boolean playing) {
-			if (this.playing != playing) {
-				this.playing = playing;
+			if (this.playingSound != playing) {
+				this.playingSound = playing;
 				return true;
 			}
 			return false;

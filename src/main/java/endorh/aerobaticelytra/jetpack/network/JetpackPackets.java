@@ -3,6 +3,7 @@ package endorh.aerobaticelytra.jetpack.network;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability;
 import endorh.aerobaticelytra.jetpack.common.config.Config;
+import endorh.aerobaticelytra.jetpack.common.flight.JetpackDash;
 import endorh.util.math.Vec3f;
 import endorh.util.network.DistributedPlayerPacket;
 import endorh.util.network.ServerPlayerPacket;
@@ -16,7 +17,8 @@ public class JetpackPackets {
 		DistributedPlayerPacket.with(NetworkHandler.CHANNEL, NetworkHandler.ID_GEN)
 		  .registerLocal(DJetpackSneakingPacket::new)
 		  .registerLocal(DJetpackJumpingPacket::new)
-		  .registerLocal(DJetpackPropulsionVectorPacket::new);
+		  .registerLocal(DJetpackPropulsionVectorPacket::new)
+		  .registerLocal(DJetpackDashPacket::new);
 		ServerPlayerPacket.with(NetworkHandler.CHANNEL, NetworkHandler.ID_GEN)
 		  .register(SJetpackFlyingPacket::new)
 		  .register(SJetpackMotionPacket::new);
@@ -96,6 +98,29 @@ public class JetpackPackets {
 		}
 		@Override public void deserialize(FriendlyByteBuf buf) {
 			propVec = Vec3f.read(buf);
+		}
+	}
+	
+	public static class DJetpackDashPacket extends ValidatedDistributedPlayerPacket {
+		Vec3f vector;
+		
+		public DJetpackDashPacket() {}
+		public DJetpackDashPacket(Vec3f vector) {
+			this.vector = vector;
+		}
+		
+		@Override protected void onServer(Player sender, Context ctx) {
+			if (!JetpackDash.startDash(sender, vector)) invalidate();
+		}
+		@Override protected void onClient(Player sender, Context ctx) {
+			JetpackDash.startDash(sender, vector);
+		}
+		
+		@Override protected void serialize(FriendlyByteBuf buf) {
+			vector.write(buf);
+		}
+		@Override protected void deserialize(FriendlyByteBuf buf) {
+			vector = Vec3f.read(buf);
 		}
 	}
 	
