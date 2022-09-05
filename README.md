@@ -1,13 +1,10 @@
 # Aerobatic Elytra Jetpack
 
-Adds a Jetpack flight mode to the Aerobatic Elytra added by the Aerobatic Elytra mod (TODO: link)
+Minecraft mod adding a jetpack flight mode to the Aerobatic Elytra from the
+[Aerobatic Elytra mod](https://github.com/endorh/aerobaticelytra).
 
-A hover flight mode is also added.
+The jetpack can also fly in hover mode, and perform quick dashes in any direction
+depending on the server's configuration.
 
-## Quick start
-
-TODO
-
-## Customization guide
-
-TODO
+## Guide? Quickstart? Wiki? FAQ?
+Not there yet.
