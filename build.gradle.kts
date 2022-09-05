@@ -26,6 +26,7 @@ plugins {
 
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
+val githubRepo = "endorh/aerobaticelytrajetpack"
 val modVersion = "0.2.24"
 val mcVersion = "1.19.2"
 val forge = "43.1.1"
@@ -383,6 +384,14 @@ artifacts {
 
 publishing {
 	repositories {
+		maven("https://maven.pkg.github.com/$githubRepo") {
+			name = "GitHubPackages"
+			credentials {
+				username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+				password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+			}
+		}
+		
 		maven(rootProject.projectDir.parentFile.resolve("maven")) {
 			name = "LocalMods"
 		}
