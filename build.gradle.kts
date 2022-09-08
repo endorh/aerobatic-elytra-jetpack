@@ -62,7 +62,7 @@ val aerobaticElytraVersion = "0.2.+"
 val flightCoreVersion = "0.5.+"
 val simpleConfigApiVersion = "1.0.+"
 val simpleConfigVersion = "1.0.+"
-val endorhUtilVersion = "0.5.+"
+val lazuLibVersion = "0.5.+"
 
 // Integration
 val jeiVersion = "8.3.1.62"
@@ -220,7 +220,7 @@ dependencies {
 	runtimeOnly(fg.deobf("endorh.simpleconfig:simpleconfig-$mcVersion:$simpleConfigVersion"))
 	
 	// Endor8 Util
-	implementation(fg.deobf("endorh.util:endorutil-$mcVersion:$endorhUtilVersion"))
+	implementation(fg.deobf("endorh.util.lazulib:lazulib-$mcVersion:$lazuLibVersion"))
 
 	// Only for debug
 	runtimeOnly(fg.deobf("mezz.jei:jei-$mcVersion:$jeiVersion"))
