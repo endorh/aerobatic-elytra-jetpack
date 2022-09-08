@@ -37,7 +37,7 @@ license="${license}"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.aerobaticelytrajetpack]]
-    modId="endorutil"
+    modId="lazulib"
     versionRange="[0.5,1.0)"
     mandatory=true
     ordering="NONE"
