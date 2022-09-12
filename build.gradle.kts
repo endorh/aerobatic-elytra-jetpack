@@ -26,7 +26,7 @@ plugins {
 
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
-val githubRepo = "endorh/aerobaticelytrajetpack"
+val githubRepo = "endorh/aerobatic-elytra-jetpack"
 val modVersion = "0.2.24"
 val mcVersion = "1.19.2"
 val forge = "43.1.1"
@@ -138,6 +138,7 @@ minecraft {
 			property("forge.logging.console.level", "debug")
 			property("mixin.env.disableRefMap", "true")
 			
+			// JetBrains Runtime HotSwap (run with vanilla JBR 17 without fast-debug, see CONTRIBUTING.md)
 			jvmArg("-XX:+AllowEnhancedClassRedefinition")
 			
 			mods {
@@ -154,6 +155,7 @@ minecraft {
 			property("forge.logging.console.level", "debug")
 			property("mixin.env.disableRefMap", "true")
 			
+			// JetBrains Runtime HotSwap (run with vanilla JBR 17 without fast-debug, see CONTRIBUTING.md)
 			jvmArg("-XX:+AllowEnhancedClassRedefinition")
 			
 			arg("nogui")
@@ -199,6 +201,12 @@ repositories {
 	maven(rootProject.projectDir.parentFile.resolve("maven")) {
 		name = "LocalMods" // Local repository
 	}
+	
+	val gitHubRepos = listOf("endorh/lazulib", "endorh/flight-core", "endorh/simple-config", "endorh/aerobatic-elytra")
+	for (repo in gitHubRepos) maven("https://maven.pkg.github.com/$repo") {
+		name = "GitHub/$repo"
+	}
+	
 	mavenCentral()
 }
 
@@ -212,7 +220,6 @@ dependencies {
 	
 	// Mod dependencies
 	// Aerobatic Elytra
-	// TODO: Replace with curse maven or GitHub maven once published
 	implementation(fg.deobf("endorh.aerobaticelytra:aerobaticelytra-$mcVersion:$aerobaticElytraVersion"))
 	
 	// Flight Core
