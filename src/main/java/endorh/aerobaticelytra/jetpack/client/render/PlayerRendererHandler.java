@@ -6,22 +6,19 @@ import endorh.aerobaticelytra.client.render.layer.AerobaticRenderData;
 import endorh.aerobaticelytra.common.capability.IFlightData;
 import endorh.aerobaticelytra.jetpack.common.JetpackLogic;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
-import endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModeTags;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModes;
 import endorh.flightcore.events.SetupRotationsRenderPlayerEvent;
-import endorh.util.math.Interpolator;
+import endorh.util.animation.Easing;
 import endorh.util.math.Vec3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.server.level.ChunkHolder.PlayerProvider;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -73,7 +70,7 @@ public class PlayerRendererHandler {
 			  fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
 			  || jet.isJumping())) ? 0.1F : -0.1F;
 			
-			float t = 1F - Interpolator.quadInOut(
+			float t = 1F - Easing.quadInOut(
 			  smoother.cancelLimbSwingAmountProgress = Mth.clamp(
 				 smoother.cancelLimbSwingAmountProgress + step, 0F, 1F));
 			player.animationSpeed = t * player.animationSpeed;
