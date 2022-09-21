@@ -9,13 +9,12 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static endorh.util.math.Interpolator.clampedLerp;
 import static java.lang.Math.abs;
+import static net.minecraft.util.math.MathHelper.clampedLerp;
 import static net.minecraft.util.math.MathHelper.lerp;
 
 public class JetpackDashParticle extends SpriteTexturedParticle {
@@ -139,7 +138,7 @@ public class JetpackDashParticle extends SpriteTexturedParticle {
 	@Override public void tick() {
 		super.tick();
 		if (age > duration + sustain)
-			particleAlpha = clampedLerp(0.9F, 0F, ((float) age - duration - sustain) / fadeOut);
+			particleAlpha = (float) clampedLerp(0.9F, 0F, ((float) age - duration - sustain) / fadeOut);
 	}
 	
 	private void vertex(
