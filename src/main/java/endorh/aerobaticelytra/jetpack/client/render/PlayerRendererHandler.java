@@ -9,7 +9,7 @@ import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModeTags;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModes;
 import endorh.flightcore.events.SetupRotationsRenderPlayerEvent;
-import endorh.util.math.Interpolator;
+import endorh.util.animation.Easing;
 import endorh.util.math.Vec3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.model.PlayerModel;
@@ -71,7 +71,7 @@ public class PlayerRendererHandler {
 			  fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
 			  || jet.isJumping())) ? 0.1F : -0.1F;
 			
-			float t = 1F - Interpolator.quadInOut(
+			float t = 1F - Easing.quadInOut(
 			  smoother.cancelLimbSwingAmountProgress = Mth.clamp(
 				 smoother.cancelLimbSwingAmountProgress + step, 0F, 1F));
 			player.animationSpeed = t * player.animationSpeed;

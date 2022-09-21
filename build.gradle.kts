@@ -27,7 +27,7 @@ plugins {
 val modId = "aerobaticelytrajetpack"
 val modGroup = "endorh.aerobaticelytra.jetpack"
 val githubRepo = "endorh/aerobatic-elytra-jetpack"
-val modVersion = "0.2.20"
+val modVersion = "0.2.21"
 val mcVersion = "1.18.2"
 val forge = "40.1.0"
 val forgeVersion = "$mcVersion-$forge"
@@ -175,40 +175,81 @@ minecraft {
 	}
 }
 
-// Project dependencies -----------------------------------------------------------
+// Project dependencies --------------------------------------------------------
+
+val explicitGroups: MutableSet<String> = mutableSetOf()
+fun MavenArtifactRepository.includeOnly(vararg groups: String) {
+	content {
+		groups.forEach {
+			// Include subgroups as well
+			val regex = "${it.replace(".", "\\.")}(\\..*)?"
+			includeGroupByRegex(regex)
+			explicitGroups.add(regex)
+		}
+	}
+}
+
+fun MavenArtifactRepository.excludeExplicit() {
+	content {
+		explicitGroups.forEach {
+			excludeGroupByRegex(it)
+		}
+	}
+}
 
 repositories {
-	maven("https://repo.maven.apache.org/maven2") {
-		name = "Maven Central"
-	}
 	maven("https://www.cursemaven.com") {
-		name = "Curse Maven" // Curse Maven
-		content {
-			includeGroup("curse.maven")
-		}
+		name = "Curse Maven"
+		includeOnly("curse.maven")
 	}
 	
 	maven("https://dvs1.progwml6.com/files/maven/") {
 		name = "Progwml6 maven" // JEI
+		includeOnly("mezz")
 	}
 	maven("https://modmaven.k-4u.nl") {
 		name = "ModMaven" // JEI fallback
+		includeOnly("mezz")
+	}
+	
+	maven("https://maven.theillusivec4.top/") {
+		name = "TheIllusiveC4" // Curios API
+		includeOnly("top.theillusivec4")
 	}
 	
 	maven("https://maven.theillusivec4.top/") {
 		name = "TheIllusiveC4" // Curios API
 	}
 	
+	// Local repository for faster multi-mod development
 	maven(rootProject.projectDir.parentFile.resolve("maven")) {
-		name = "LocalMods" // Local repository
+		name = "LocalMods"
+		includeOnly("endorh")
 	}
 	
-	val gitHubRepos = listOf("endorh/lazulib", "endorh/flight-core", "endorh/simple-config", "endorh/aerobatic-elytra")
-	for (repo in gitHubRepos) maven("https://maven.pkg.github.com/$repo") {
-		name = "GitHub/$repo"
+	// GitHub Packages
+	val gitHubRepos = mapOf(
+		"endorh/lazulib" to "endorh.util.lazulib",
+		"endorh/flight-core" to "endorh.flightcore",
+		"endorh/simple-config" to "endorh.simpleconfig",
+		"endorh/aerobatic-elytra" to "endorh.aerobaticelytra",
+	)
+	for (repo in gitHubRepos.entries) maven("https://maven.pkg.github.com/${repo.key}") {
+		name = "GitHub/${repo.key}"
+		includeOnly(repo.value)
+		credentials {
+			username = "gradle" // Not relevant
+			// read:packages only GitHub token published by Endor H
+			// You may as well use your own GitHub PAT with read:packages scope, until GitHub
+			//   supports unauthenticated read access to public packages, see:
+			//   https://github.com/orgs/community/discussions/26634#discussioncomment-3252637
+			password = "\u0067hp_SjEzHOWgAWIKVczipKZzLPPJcCMHHd1LILfK"
+		}
 	}
 	
-	mavenCentral()
+	mavenCentral {
+		excludeExplicit()
+	}
 }
 
 dependencies {
@@ -217,7 +258,7 @@ dependencies {
     implementation("org.junit.jupiter:junit-jupiter:5.9.0")
 
 	// Minecraft
-    "minecraft"("net.minecraftforge:forge:$forgeVersion")
+    minecraft("net.minecraftforge:forge:$forgeVersion")
 	
 	// Mod dependencies
 	// Aerobatic Elytra
@@ -259,7 +300,7 @@ dependencies {
 	// runtimeOnly(fg.deobf("curse.maven:catalogue-459701:3803098"))
 }
 
-// Tasks --------------------------------------------------------------------------
+// Tasks -----------------------------------------------------------------------
 
 tasks.withType<Test> {
 	useJUnitPlatform()
