@@ -1,17 +1,17 @@
 modLoader="javafml"
 loaderVersion="[35,)"
 license="${license}"
-#issueTrackerURL="${issue_tracker}"
+issueTrackerURL="${issue_tracker}"
 [[mods]]
-	modId="aerobaticelytrajetpack"
-	version="${version}"
-	displayName="${display}"
-	#updateJSONURL="${update_json}"
-	#displayURL="${page}"
-	logoFile="${logo_file}"
-	credits="${credits}"
-	authors="${authors}"
-	description='''${description}'''
+    modId="aerobaticelytrajetpack"
+    version="${version}"
+    displayName="${display}"
+    updateJSONURL="${update_json}"
+    displayURL="${page}"
+    logoFile="${logo_file}"
+    credits="${credits}"
+    authors="${authors}"
+    description='''${description}'''
 [[dependencies.aerobaticelytrajetpack]]
     modId="forge"
     mandatory=true
@@ -27,18 +27,18 @@ license="${license}"
 [[dependencies.aerobaticelytrajetpack]]
     modId="flightcore"
     mandatory=true
-    versionRange="[0.5,1.0)"
+    versionRange="[1.0,2.0)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.aerobaticelytrajetpack]]
     modId="aerobaticelytra"
     mandatory=true
-    versionRange="[0.2,1.0)"
+    versionRange="[1.0,2.0)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.aerobaticelytrajetpack]]
     modId="lazulib"
-    versionRange="[0.5,1.0)"
+    versionRange="[1.0,2.0)"
     mandatory=true
     ordering="NONE"
     side="BOTH"
