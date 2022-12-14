@@ -60,7 +60,6 @@ val license = "LGPL"
 // Dependencies
 val aerobaticElytraVersion = "1.0.+"
 val flightCoreVersion = "1.0.+"
-val simpleConfigApiVersion = "1.0.+"
 val simpleConfigVersion = "1.0.+"
 val lazuLibVersion = "1.0.+"
 
@@ -267,7 +266,7 @@ dependencies {
 	implementation(fg.deobf("endorh.flightcore:flightcore-$mcVersion:$flightCoreVersion"))
 	
 	// Simple Config
-	compileOnly("endorh.simpleconfig:simpleconfig-$mcVersion-api:$simpleConfigApiVersion")
+	compileOnly("endorh.simpleconfig:simpleconfig-$mcVersion:$simpleConfigVersion:api")
 	runtimeOnly(fg.deobf("endorh.simpleconfig:simpleconfig-$mcVersion:$simpleConfigVersion"))
 	
 	// Endor8 Util
