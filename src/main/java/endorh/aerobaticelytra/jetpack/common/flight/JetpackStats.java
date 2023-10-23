@@ -1,10 +1,11 @@
 package endorh.aerobaticelytra.jetpack.common.flight;
 
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -37,7 +38,7 @@ public class JetpackStats {
 	  String key, StatFormatter formatter
 	) {
 		ResourceLocation location = prefix(key);
-		Registry.register(Registry.CUSTOM_STAT, key, location);
+		Registry.register(BuiltInRegistries.CUSTOM_STAT, key, location);
 		Stats.CUSTOM.get(location, formatter);
 		return location;
 	}

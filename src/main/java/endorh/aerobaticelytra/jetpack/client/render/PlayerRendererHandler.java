@@ -1,7 +1,7 @@
 package endorh.aerobaticelytra.jetpack.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import endorh.aerobaticelytra.client.render.layer.AerobaticRenderData;
 import endorh.aerobaticelytra.common.capability.IFlightData;
 import endorh.aerobaticelytra.jetpack.common.JetpackLogic;
@@ -126,9 +126,9 @@ public class PlayerRendererHandler {
 			prop.add(prev);
 			float yaw = prop.getYaw();
 			float pitch = 90F + prop.getPitch();
-			mStack.mulPose(Vector3f.YP.rotationDegrees(-yaw));
-			mStack.mulPose(Vector3f.XP.rotationDegrees(pitch));
-			mStack.mulPose(Vector3f.YP.rotationDegrees(yaw));
+			mStack.mulPose(Axis.YP.rotationDegrees(-yaw));
+			mStack.mulPose(Axis.XP.rotationDegrees(pitch));
+			mStack.mulPose(Axis.YP.rotationDegrees(yaw));
 		}
 	}
 	
