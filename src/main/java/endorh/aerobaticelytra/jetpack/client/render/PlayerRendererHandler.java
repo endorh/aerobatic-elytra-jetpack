@@ -10,6 +10,7 @@ import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModeTags;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModes;
 import endorh.flightcore.events.SetupRotationsRenderPlayerEvent;
 import endorh.util.animation.Easing;
+import endorh.util.common.ObfuscationReflectionUtil;
 import endorh.util.math.Vec3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.model.PlayerModel;
@@ -18,15 +19,39 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 import static endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability.getJetpackDataOrDefault;
 
 public class PlayerRendererHandler {
+	private static final ObfuscationReflectionUtil.SoftField<WalkAnimationState, Float> WalkAnimationState$speedOld =
+		ObfuscationReflectionUtil.getSoftField(WalkAnimationState.class, "f_267406_");
+
+	public record WalkAnimationSpeedSnapshot(float speed, float speedOld) {
+		public static WalkAnimationSpeedSnapshot from(WalkAnimationState state) {
+			return new WalkAnimationSpeedSnapshot(state.speed(), state.speed(0F));
+		}
+		public void write(WalkAnimationState state) {
+			state.setSpeed(speed);
+			WalkAnimationState$speedOld.set(state, speedOld);
+		}
+	}
+
+	private static void dimAnimationSpeed(WalkAnimationState state, float dimFactor) {
+		state.setSpeed(state.speed() * dimFactor);
+		WalkAnimationState$speedOld.set(state, state.speed(0F) * dimFactor);
+	}
+
+	private static final Map<Player, WalkAnimationSpeedSnapshot> animationSnapshots = new WeakHashMap<>(4);
+
 	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
 		final Camera cam = event.getCamera();
 		final Entity entity = cam.getEntity();
@@ -73,8 +98,9 @@ public class PlayerRendererHandler {
 			float t = 1F - Easing.quadInOut(
 			  smoother.cancelLimbSwingAmountProgress = Mth.clamp(
 				 smoother.cancelLimbSwingAmountProgress + step, 0F, 1F));
-			player.animationSpeed = t * player.animationSpeed;
-			player.animationSpeedOld = t * player.animationSpeedOld;
+			WalkAnimationState animationState = player.walkAnimation;
+			animationSnapshots.put(player, WalkAnimationSpeedSnapshot.from(animationState));
+			dimAnimationSpeed(animationState, t);
 			
 			if (fd.getFlightMode().is(JetpackFlightModeTags.JETPACK) && jet.isFlying()) {
 				final PlayerModel<AbstractClientPlayer> model = event.getRenderer().getModel();
@@ -94,6 +120,9 @@ public class PlayerRendererHandler {
 	
 	@SubscribeEvent public static void onRenderPlayerEvent(RenderPlayerEvent.Post event) {
 		event.getPoseStack().popPose();
+		Player player = event.getEntity();
+		WalkAnimationSpeedSnapshot snapshot = animationSnapshots.remove(player);
+		if (snapshot != null) snapshot.write(player.walkAnimation);
 	}
 	
 	private static final Vec3f prop = Vec3f.ZERO.get();
