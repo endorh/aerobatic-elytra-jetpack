@@ -92,7 +92,7 @@ public class PlayerRendererHandler {
 			IFlightData fd = getFlightDataOrDefault(player);
 			IJetpackData jet = getJetpackDataOrDefault(player);
 			float step = jet.isDashing()? 0.5F : (JetpackLogic.canUseJetpack(player) && (
-			  fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
+			  fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.onGround()
 			  || jet.isJumping())) ? 0.1F : -0.1F;
 			
 			float t = 1F - Easing.quadInOut(

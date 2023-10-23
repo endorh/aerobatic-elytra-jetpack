@@ -44,9 +44,9 @@ public class AerobaticJetpackParticles {
 	@OnlyIn(Dist.CLIENT)
 	public static class ClientRegistrar {
 		@SubscribeEvent
-		public static void onParticleFactoryRegistration(RegisterParticleProvidersEvent event) {
-			event.register(JETPACK_PARTICLE, JetpackParticle.Factory::new);
-			event.register(DASH_PARTICLE, JetpackDashParticle.Factory::new);
+		public static void onParticleFactoryRegistration(RegisterParticleProvidersEvent e) {
+			e.registerSpriteSet(JETPACK_PARTICLE, JetpackParticle.Factory::new);
+			e.registerSpriteSet(DASH_PARTICLE, JetpackDashParticle.Factory::new);
 			AerobaticJetpack.logRegistered("Particle Factories");
 		}
 	}

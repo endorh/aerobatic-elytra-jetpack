@@ -98,16 +98,16 @@ public class JetpackTrail {
 			z_e = (float) random.nextGaussian() * 0.005F;
 			x_i = (float) random.nextGaussian() * 0.005F;
 			z_i = (float) random.nextGaussian() * 0.005F;
-			player.level.addParticle(
+			player.level().addParticle(
 			  particle, rocketLeft.x, rocketLeft.y, rocketLeft.z,
 			  particleMotion.x + x_e, particleMotion.y, particleMotion.z + z_e);
-			player.level.addParticle(
+			player.level().addParticle(
 			  particle, rocketRight.x, rocketRight.y, rocketRight.z,
 			  particleMotion.x - x_e, particleMotion.y, particleMotion.z + z_e);
-			player.level.addParticle(
+			player.level().addParticle(
 			  particle, rocketCenterLeft.x, rocketCenterLeft.y, rocketCenterLeft.z,
 			  particleMotion.x + x_i, particleMotion.y, particleMotion.z + z_i);
-			player.level.addParticle(
+			player.level().addParticle(
 			  particle, rocketCenterRight.x, rocketCenterRight.y, rocketCenterRight.z,
 			  particleMotion.x - x_i, particleMotion.y, particleMotion.z + z_i);
 		}
@@ -168,19 +168,19 @@ public class JetpackTrail {
 		final int life = 8;
 		final float size = 0.2F;
 		final boolean hide = Minecraft.getInstance().player == player;
-		player.level.addParticle(
+		player.level().addParticle(
 		  new JetpackParticleData(life, size, hide),
 		  rocketLeft.x, rocketLeft.y, rocketLeft.z,
 		  particleMotion.x + x_e, particleMotion.y, particleMotion.z + z_e);
-		player.level.addParticle(
+		player.level().addParticle(
 		  new JetpackParticleData(life, size, hide),
 		  rocketRight.x, rocketRight.y, rocketRight.z,
 		  particleMotion.x - x_e, particleMotion.y, particleMotion.z + z_e);
-		player.level.addParticle(
+		player.level().addParticle(
 		  new JetpackParticleData(life, size, hide),
 		  rocketCenterLeft.x, rocketCenterLeft.y, rocketCenterLeft.z,
 		  particleMotion.x + x_i, particleMotion.y, particleMotion.z + z_i);
-		player.level.addParticle(
+		player.level().addParticle(
 		  new JetpackParticleData(life, size, hide),
 		  rocketCenterRight.x, rocketCenterRight.y, rocketCenterRight.z,
 		  particleMotion.x - x_i, particleMotion.y, particleMotion.z + z_i);

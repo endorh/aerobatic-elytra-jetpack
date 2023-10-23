@@ -18,15 +18,12 @@ import endorh.util.math.Vec3f;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -43,7 +40,7 @@ public class JetpackDash {
 		Player player = event.player;
 		dashTick(player);
 		IJetpackData jet = getJetpackDataOrDefault(player);
-		if (!jet.isDashing() && player.getLevel().isClientSide()) {
+		if (!jet.isDashing() && player.level().isClientSide()) {
 			if (jet.isDashKeyPressed()) {
 				startDashFromDPad(player, event.travelVector);
 				if (!ClientConfig.auto_repeat_dash)
@@ -110,7 +107,7 @@ public class JetpackDash {
 		float fuel = spec.getAbility(Ability.FUEL);
 		float usage = getDashFuelUsage(player);
 		if (fuel < usage) return false;
-		if (player.getLevel().isClientSide()) {
+		if (player.level().isClientSide()) {
 			if (player instanceof LocalPlayer)
 				new DJetpackDashPacket(vec).send();
 		}
@@ -124,9 +121,9 @@ public class JetpackDash {
 		int duration = getDashDuration(player);
 		int cooldown = getDashCooldown(player);
 		data.startDash(player.tickCount, vec, duration, cooldown);
-		if (player.getLevel().isClientSide()) {
+		if (player.level().isClientSide()) {
 			Vec3 center = player.getBoundingBox().getCenter();
-			player.level.addParticle(
+			player.level().addParticle(
 			  new DashParticleData(vec.toVec3d(), duration, !(player instanceof RemotePlayer)),
 			  center.x, center.y, center.z, 0D, 0D, 0D);
 			player.playSound(JetpackSounds.JETPACK_DASH, sound.dash, 1F);
@@ -141,7 +138,7 @@ public class JetpackDash {
 		       && getMaxDashes(player) > 0 && (
 					jet.getConsecutiveDashes() < getMaxDashes(player)
 					|| jet.getDashStart() + jet.getDashTicks() + jet.getDashCooldown() < player.tickCount
-		       ) && (player.isOnGround()? canDashFromGround(player) : canDashFromAir(player));
+		       ) && (player.onGround()? canDashFromGround(player) : canDashFromAir(player));
 	}
 	
 	public static int getMaxDashes(Player player) {

@@ -47,7 +47,7 @@ import static java.lang.Math.*;
 @EventBusSubscriber(modid = AerobaticJetpack.MOD_ID)
 public class JetpackFlight {
 	private static final Logger LOGGER = LogManager.getLogger();
-	
+
 	// Cache vectors
 	private static final Vec3f targetVec = Vec3f.ZERO.get();
 	private static final Vec3f motionVec = Vec3f.ZERO.get();
@@ -74,11 +74,11 @@ public class JetpackFlight {
 			return false;
 		}
 		boolean cancel = false;
-		if (!data.isFlying() && fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.isOnGround()
+		if (!data.isFlying() && fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER) && !player.onGround()
 		    && player.tickCount - data.getLastFlight() > 5) {
 			// Keep hover level
 			data.setFlying(true);
-			if (!player.level.isClientSide)
+			if (!player.level().isClientSide)
 				new SJetpackFlyingPacket(player, data).sendTracking();
 			if (player.tickCount - data.getLastGround() == 1) {
 				double y = player.getY() - floor(player.getY());
@@ -117,12 +117,12 @@ public class JetpackFlight {
 			}
 			data.setFallSpeed(motionVec.y);
 			
-			if (player.isOnGround()) {
+			if (player.onGround()) {
 				data.setFlying(false);
-				if (!player.level.isClientSide)
+				if (!player.level().isClientSide)
 					new SJetpackFlyingPacket(player, data).sendTracking();
 				data.setSneaking(false);
-				if (player.level.isClientSide) {
+				if (player.level().isClientSide) {
 					if (ClientConfig.disable_hover_when_landing) {
 						if (fd.isFlightMode(JetpackFlightModes.JETPACK_HOVER))
 							fd.setFlightMode(JetpackFlightModes.JETPACK_FLIGHT);
@@ -130,13 +130,13 @@ public class JetpackFlight {
 					}
 				}
 			}
-		} else if (!player.isOnGround()) {
+		} else if (!player.onGround()) {
 			if (player.tickCount - data.getLastGround() > 1) {
 				data.setFlying(true);
-				if (!player.level.isClientSide)
+				if (!player.level().isClientSide)
 					new SJetpackFlyingPacket(player, data).sendTracking();
 			}
-		} else if (player.isOnGround()) {
+		} else if (player.onGround()) {
 			if (player.tickCount - data.getLastGround() == 1)
 				onNonFlightTravel(player, travelVector);
 			data.setLastGround(player.tickCount);
@@ -205,7 +205,7 @@ public class JetpackFlight {
 			
 			player.setDeltaMovement(motionVec.toVector3d());
 			player.move(MoverType.SELF, player.getDeltaMovement());
-			if (!player.level.isClientSide)
+			if (!player.level().isClientSide)
 				new SJetpackMotionPacket(player).sendTracking();
 			player.awardStat(
 			  JetpackStats.JETPACK_FLIGHT_ONE_CM,
@@ -216,7 +216,7 @@ public class JetpackFlight {
 			
 			if (player.isLocalPlayer())
 				new DJetpackPropulsionVectorPacket(data).send();
-			if (player.level.isClientSide) {
+			if (player.level().isClientSide) {
 				motionVec.set(player.getDeltaMovement());
 				JetpackTrail.addParticles(player, propVec, motionVec);
 				if (data.isJumping() && data.updatePlayingSound(true))
@@ -317,14 +317,14 @@ public class JetpackFlight {
 			motionVec.mul(0.98F);
 			player.setDeltaMovement(motionVec.toVector3d());
 			player.move(MoverType.SELF, player.getDeltaMovement());
-			if (!player.level.isClientSide)
+			if (!player.level().isClientSide)
 				new SJetpackMotionPacket(player).sendTracking();
 			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
 			               (int) round(player.getDeltaMovement().length() * 100F));
 			
 			if (AerobaticElytraLogic.isLocalPlayer(player))
 				new DJetpackPropulsionVectorPacket(data).send();
-			if (player.level.isClientSide) {
+			if (player.level().isClientSide) {
 				motionVec.set(player.getDeltaMovement());
 				JetpackTrail.addParticles(player, propVec, motionVec);
 				if (data.updatePlayingSound(true))
@@ -336,7 +336,7 @@ public class JetpackFlight {
 			motionVec.mul(0.98F);
 			player.setDeltaMovement(motionVec.toVector3d());
 			player.move(MoverType.SELF, player.getDeltaMovement());
-			if (!player.level.isClientSide)
+			if (!player.level().isClientSide)
 				new SJetpackMotionPacket(player).sendTracking();
 			player.awardStat(JetpackStats.JETPACK_FLIGHT_ONE_CM,
 			               (int) round(player.getDeltaMovement().length() * 100F));
@@ -344,7 +344,7 @@ public class JetpackFlight {
 			
 			if (AerobaticElytraLogic.isLocalPlayer(player))
 				new DJetpackPropulsionVectorPacket(data).send();
-			if (player.level.isClientSide) {
+			if (player.level().isClientSide) {
 				motionVec.set(player.getDeltaMovement());
 				JetpackTrail.addHoverParticles(player, propVec, motionVec);
 				if (data.updatePlayingSound(true))
@@ -427,10 +427,10 @@ public class JetpackFlight {
 	@SubscribeEvent
 	public static void onBreakSpeed(BreakSpeed event) {
 		final Player player = event.getEntity();
-		if (player.isOnGround())
+		if (player.onGround())
 			return;
 		IFlightData data = getFlightDataOrDefault(player);
-		if (data.getFlightMode().is(JetpackFlightModeTags.HOVER) && !player.isOnGround()) {
+		if (data.getFlightMode().is(JetpackFlightModeTags.HOVER) && !player.onGround()) {
 			IElytraSpec spec = AerobaticElytraLogic.getElytraSpecOrDefault(player);
 			final float hover_speed = spec.getAbility(JetpackAbilities.HOVER_MINING);
 			event.setNewSpeed(max(event.getNewSpeed(), event.getOriginalSpeed() * 5F * hover_speed));

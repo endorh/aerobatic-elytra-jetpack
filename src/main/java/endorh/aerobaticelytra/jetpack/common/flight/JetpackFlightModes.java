@@ -117,7 +117,7 @@ public enum JetpackFlightModes implements IFlightMode {
 	@Override
 	public IElytraPose getElytraPose(Player player) {
 		final IJetpackData jet = getJetpackDataOrDefault(player);
-		return !player.isOnGround() && JetpackLogic.canUseJetpack(player)
+		return !player.onGround() && JetpackLogic.canUseJetpack(player)
 		       && (!player.isCrouching() || jet.isFlying())
 		       ? AerobaticJetpackPoses.JETPACK_POSE : null;
 	}
