@@ -35,16 +35,20 @@ import static net.minecraftforge.client.settings.KeyConflictContext.IN_GAME;
 	public static final String AEROBATIC_ELYTRA_CATEGORY = "key.aerobaticelytra.category";
 	public static KeyMapping JETPACK_MODE;
 	public static KeyMapping JETPACK_DASH;
+	public static KeyMapping JETPACK_DASH_2;
 	
 	@EventBusSubscriber(value = Dist.CLIENT, modid = AerobaticJetpack.MOD_ID, bus = Bus.MOD)
 	public static class Registrar {
 		@SubscribeEvent public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
 			JETPACK_MODE = reg(
 			  event, "key.aerobaticelytrajetpack.hover_mode.desc", IN_GAME,
-			  GLFW.GLFW_KEY_V, AEROBATIC_ELYTRA_CATEGORY);
+			  Type.KEYSYM, GLFW.GLFW_KEY_V, AEROBATIC_ELYTRA_CATEGORY);
 			JETPACK_DASH = reg(
 			  event, "key.aerobaticelytrajetpack.dash.desc", IN_GAME,
-			  GLFW.GLFW_KEY_X, AEROBATIC_ELYTRA_CATEGORY);
+			  Type.KEYSYM, GLFW.GLFW_KEY_X, AEROBATIC_ELYTRA_CATEGORY);
+			JETPACK_DASH_2 = reg(
+				event, "key.aerobaticelytrajetpack.dash_2.desc", IN_GAME,
+				Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_5, AEROBATIC_ELYTRA_CATEGORY);
 			AerobaticJetpack.logRegistered("Key Mappings");
 		}
 	}
@@ -52,9 +56,10 @@ import static net.minecraftforge.client.settings.KeyConflictContext.IN_GAME;
 	@SuppressWarnings("SameParameterValue")
 	private static KeyMapping reg(
 	  RegisterKeyMappingsEvent event,
-	  String translation, IKeyConflictContext context, int keyCode, String category
+	  String translation, IKeyConflictContext context,
+	  Type inputType, int keyCode, String category
 	) {
-		final KeyMapping mapping = new KeyMapping(translation, context, Type.KEYSYM, keyCode, category);
+		final KeyMapping mapping = new KeyMapping(translation, context, inputType, keyCode, category);
 		event.register(mapping);
 		return mapping;
 	}
@@ -74,9 +79,9 @@ import static net.minecraftforge.client.settings.KeyConflictContext.IN_GAME;
 			AerobaticOverlays.showModeToastIfRelevant(player, mode);
 		}
 		IJetpackData data = getJetpackDataOrDefault(player);
-		if (JETPACK_DASH.consumeClick()) {
+		if (JETPACK_DASH.consumeClick() || JETPACK_DASH_2.consumeClick()) {
 			data.setDashKeyPressed(true);
-		} else if (!JETPACK_DASH.isDown()) {
+		} else if (!JETPACK_DASH.isDown() && !JETPACK_DASH_2.isDown()) {
 			data.setDashKeyPressed(false);
 		}
 	}
