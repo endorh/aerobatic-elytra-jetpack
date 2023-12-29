@@ -1,7 +1,7 @@
 package endorh.aerobaticelytra.jetpack.common.capability;
 
-import endorh.util.capability.ISerializableCapability;
-import endorh.util.math.Vec3f;
+import endorh.lazulib.capability.ISerializableCapability;
+import endorh.lazulib.math.Vec3f;
 
 /**
  * Capability containing the state of an Aerobatic Elytra Jetpack for a player.

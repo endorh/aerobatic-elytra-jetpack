@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.RegisterEvent;
 
 import static endorh.aerobaticelytra.common.item.IAbility.DisplayType.*;
-import static endorh.util.text.TextUtil.ttc;
+import static endorh.lazulib.text.TextUtil.ttc;
 
 @EventBusSubscriber(bus = Bus.MOD, modid = AerobaticJetpack.MOD_ID)
 public enum JetpackAbilities implements IAbility {

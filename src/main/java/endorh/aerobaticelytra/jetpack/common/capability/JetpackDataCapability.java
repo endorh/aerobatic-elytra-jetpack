@@ -2,8 +2,8 @@ package endorh.aerobaticelytra.jetpack.common.capability;
 
 
 import endorh.aerobaticelytra.jetpack.AerobaticJetpack;
-import endorh.util.capability.SerializableCapabilityWrapperProvider;
-import endorh.util.math.Vec3f;
+import endorh.lazulib.capability.SerializableCapabilityWrapperProvider;
+import endorh.lazulib.math.Vec3f;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;

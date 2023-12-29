@@ -2,7 +2,7 @@ package endorh.aerobaticelytra.jetpack.client.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import endorh.aerobaticelytra.jetpack.common.particle.DashParticleData;
-import endorh.util.math.Vec3d;
+import endorh.lazulib.math.Vec3d;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;

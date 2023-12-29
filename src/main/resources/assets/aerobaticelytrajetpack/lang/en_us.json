@@ -1,6 +1,7 @@
 {
   "key.aerobaticelytrajetpack.hover_mode.desc": "Switch Jetpack mode",
   "key.aerobaticelytrajetpack.dash.desc": "Jetpack Dash",
+  "key.aerobaticelytrajetpack.dash_2.desc": "Jetpack Dash",
 
   "stat.aerobaticelytrajetpack.jetpack_flight_one_cm": "Distance by Jetpack",
   "stat.aerobaticelytrajetpack.jetpack_hover_one_second": "Time Hovering with Jetpack",

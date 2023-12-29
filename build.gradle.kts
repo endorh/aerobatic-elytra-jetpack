@@ -23,6 +23,7 @@ object V {
 	val parchment = "2023.09.03"
 	val forge = "47.1.79"
 	val minecraftForge = "$minecraft-$forge"
+
 	object mappings {
 		val channel = "parchment"
 		val version = "$parchment-$minecraft"
@@ -30,10 +31,8 @@ object V {
 
 	// Dependencies
 	val aerobaticElytra = "1.1.+"
-	val flightCoreMinecraft = "1.20.1"
-	val flightCore = "1.0.+"
 	val simpleConfig = "1.0.+"
-	val lazuLib = "1.0.+"
+	val lazuLib = "1.2.+"
 
 	// Integration
 	val jei = "15.2.0.27"
@@ -113,10 +112,17 @@ tasks.withType<JavaCompile> {
 	options.encoding = "UTF-8"
 }
 
-println(
-	"Java: " + System.getProperty("java.version")
-	+ " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor")
-	+ ") Arch: " + System.getProperty("os.arch"))
+fun sysProp(name: String) = System.getProperty(name) ?: null
+
+// JetBrains Runtime HotSwap (run with vanilla JBR 17 without fast-debug, see CONTRIBUTING.md)
+val jvmSupportsEnhancedClassRedefinition = sysProp("java.vendor")?.contains("JetBrains") == true
+
+println("Java: ${sysProp("java.version")}")
+println("JVM: \"${sysProp("java.vm.name")}\" ${sysProp("java.vm.version")} (${sysProp("java.vendor")})")
+
+println("Mod: \"$displayName\" ($modId)")
+println("Version: ${V.minecraft}-${V.mod} (Forge: ${V.forge})")
+println("Mappings: ${V.mappings.channel} ${V.mappings.version}")
 
 // Minecraft options -----------------------------------------------------------
 
@@ -133,9 +139,9 @@ minecraft {
 			property("forge.logging.markers", "REGISTRIES")
 			property("forge.logging.console.level", "debug")
 			property("mixin.env.disableRefMap", "true")
-			
-			// JetBrains Runtime HotSwap (run with vanilla JBR 17 without fast-debug, see CONTRIBUTING.md)
-			jvmArg("-XX:+AllowEnhancedClassRedefinition")
+
+			if (jvmSupportsEnhancedClassRedefinition)
+				jvmArg("-XX:+AllowEnhancedClassRedefinition")
 			
 			mods {
 				create(modId) {
@@ -150,9 +156,9 @@ minecraft {
 			property("forge.logging.markers", "REGISTRIES")
 			property("forge.logging.console.level", "debug")
 			property("mixin.env.disableRefMap", "true")
-			
-			// JetBrains Runtime HotSwap (run with vanilla JBR 17 without fast-debug, see CONTRIBUTING.md)
-			jvmArg("-XX:+AllowEnhancedClassRedefinition")
+
+			if (jvmSupportsEnhancedClassRedefinition)
+				jvmArg("-XX:+AllowEnhancedClassRedefinition")
 			
 			arg("nogui")
 			
@@ -224,8 +230,7 @@ repositories {
 	
 	// GitHub Packages
 	val gitHubRepos = mapOf(
-		"endorh/lazulib" to "endorh.util.lazulib",
-		"endorh/flight-core" to "endorh.flightcore",
+		"endorh/lazulib" to "endorh.lazulib",
 		"endorh/simple-config" to "endorh.simpleconfig",
 		"endorh/aerobatic-elytra" to "endorh.aerobaticelytra",
 	)
@@ -259,15 +264,12 @@ dependencies {
 	// Aerobatic Elytra
 	implementation(fg.deobf("endorh.aerobaticelytra:aerobaticelytra-${V.minecraft}:${V.aerobaticElytra}"))
 	
-	// Flight Core
-	implementation(fg.deobf("endorh.flightcore:flightcore-${V.flightCoreMinecraft}:${V.flightCore}"))
-	
 	// Simple Config
 	compileOnly("endorh.simpleconfig:simpleconfig-${V.minecraft}:${V.simpleConfig}:api")
 	runtimeOnly(fg.deobf("endorh.simpleconfig:simpleconfig-${V.minecraft}:${V.simpleConfig}"))
 	
-	// Endor8 Util
-	implementation(fg.deobf("endorh.util.lazulib:lazulib-${V.minecraft}:${V.lazuLib}"))
+	// LazuLib
+	implementation(fg.deobf("endorh.lazulib:lazulib-${V.minecraft}:${V.lazuLib}"))
 
 	// Only for debug
 	// JEI
@@ -444,6 +446,7 @@ publishing {
 		register<MavenPublication>("mod") {
 			artifactId = "$modId-${V.minecraft}"
 			version = V.mod
+			group = modGroup
 			
 			artifact(tasks.jar.get())
 			artifact(sourcesJarTask)

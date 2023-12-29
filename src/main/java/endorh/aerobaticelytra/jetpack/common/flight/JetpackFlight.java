@@ -22,7 +22,7 @@ import endorh.aerobaticelytra.jetpack.network.JetpackPackets.DJetpackPropulsionV
 import endorh.aerobaticelytra.jetpack.network.JetpackPackets.SJetpackFlyingPacket;
 import endorh.aerobaticelytra.jetpack.network.JetpackPackets.SJetpackMotionPacket;
 import endorh.aerobaticelytra.network.AerobaticPackets.DFlightModePacket;
-import endorh.util.math.Vec3f;
+import endorh.lazulib.math.Vec3f;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,8 +37,8 @@ import org.apache.logging.log4j.Logger;
 
 import static endorh.aerobaticelytra.common.capability.FlightDataCapability.getFlightDataOrDefault;
 import static endorh.aerobaticelytra.common.item.IAbility.Ability.FUEL;
-import static endorh.util.math.Vec3f.PI_HALF;
-import static endorh.util.math.Vec3f.TO_RAD;
+import static endorh.lazulib.math.Vec3f.PI_HALF;
+import static endorh.lazulib.math.Vec3f.TO_RAD;
 import static java.lang.Math.*;
 
 /**

@@ -7,7 +7,7 @@ import endorh.simpleconfig.api.entry.FloatEntryBuilder;
 import net.minecraft.util.Mth;
 
 import static endorh.simpleconfig.api.ConfigBuilderFactoryProxy.*;
-import static endorh.util.math.Vec3f.TO_RAD;
+import static endorh.lazulib.math.Vec3f.TO_RAD;
 
 public class Config {
 	

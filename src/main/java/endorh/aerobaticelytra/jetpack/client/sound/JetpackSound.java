@@ -7,7 +7,7 @@ import endorh.aerobaticelytra.jetpack.common.JetpackLogic;
 import endorh.aerobaticelytra.jetpack.common.capability.IJetpackData;
 import endorh.aerobaticelytra.jetpack.common.capability.JetpackDataCapability;
 import endorh.aerobaticelytra.jetpack.common.flight.JetpackFlightModes;
-import endorh.util.sound.AudioUtil;
+import endorh.lazulib.sound.AudioUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;

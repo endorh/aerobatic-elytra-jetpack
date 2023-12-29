@@ -1,8 +1,8 @@
 package endorh.aerobaticelytra.jetpack.client.trail;
 
 import endorh.aerobaticelytra.jetpack.common.particle.JetpackParticleData;
-import endorh.util.math.Vec3d;
-import endorh.util.math.Vec3f;
+import endorh.lazulib.math.Vec3d;
+import endorh.lazulib.math.Vec3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 
